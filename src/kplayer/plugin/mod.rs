@@ -20,5 +20,5 @@ pub trait BasePlugin {
     fn get_media_type(&self) -> MediaType;
 
     // validate args
-    fn validate_args(&self, args: &Vec<String>) -> Result<bool, &'static str>;
+    fn validate_user_args(&self, args: &Vec<String>) -> Result<bool, &'static str>;
 }

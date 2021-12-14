@@ -51,7 +51,7 @@ pub extern "C" fn GetArgIterator() -> i32 {
 }
 
 #[no_mangle]
-pub extern "C" fn ValidateArgs() -> i32 {
+pub extern "C" fn ValidateUserArgs() -> i32 {
     let mut args: Vec<String> = Vec::new();
 
     unsafe {
@@ -73,7 +73,7 @@ pub extern "C" fn ValidateArgs() -> i32 {
             }
         }
 
-        match INSTANCES[0].validate_args(&args) {
+        match INSTANCES[0].validate_user_args(&args) {
             Ok(_s) => 0,
             Err(_err) => util::string::DynamicString::from(_err.as_bytes()).get_index(),
         }
