@@ -62,7 +62,7 @@ pub extern "C" fn ValidateUserArgs() -> i32 {
                 break;
             }
 
-            match util::string::DynamicString::new().receive(re_index) {
+            match util::string::DynamicString::receive(re_index) {
                 Ok(_ok) => args.push(_ok),
                 Err(_err) => {
                     return util::string::DynamicString::from(

@@ -10,25 +10,24 @@ pub struct DynamicString {
 }
 
 impl DynamicString {
-    pub fn new() -> DynamicString {
-        DynamicString { index: 0 }
-    }
-
     pub fn get_index(&self) -> i32 {
         self.index
     }
 
-    pub fn receive(&self, index: i32) -> Result<String, &'static str> {
+    pub fn receive(index: i32) -> Result<String, &'static str> {
         let mut str: String = String::new();
         unsafe {
-            let c: i32 = 0;
+            let mut c: i32 = 0;
             loop {
                 let char_u8 = GetString(index, c) as u8;
                 if char_u8 == 0 {
                     break;
                 }
                 str.push(char_u8 as char);
+
+                c = c + 1;
             }
+            DeleteString(index);
         }
 
         Ok(str)
