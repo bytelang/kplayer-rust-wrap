@@ -1,12 +1,19 @@
 pub mod plugin;
+pub mod proto;
 pub mod util;
 
+#[allow(dead_code)]
 extern "C" {
-    fn GetValidateArgIterator() -> i32;
+    fn GetValidateArgIterator(main_point: i64) -> i32;
+    fn UpdateArg(mp: i64, key: i32, value: i32) -> i32;
+    fn NewTimerTask(mp: i64, tid: i32, milliseconds: i32) -> i32;
+    fn RegisterMessageAction(mp: i64, action: i32) -> i32;
+    fn GetHistoryEventMessage(action: i32) -> i32;
 }
 
 static mut ARGS_INDEX: usize = 0;
 static mut INSTANCES: Vec<Box<dyn plugin::BasePlugin>> = Vec::new();
+static mut MAIN_POINT: i64 = 0;
 
 pub fn export_plugin(p: Box<dyn plugin::BasePlugin>) {
     unsafe {
@@ -57,7 +64,7 @@ pub extern "C" fn ValidateUserArgs() -> i32 {
     unsafe {
         // get warp args
         loop {
-            let re_index = GetValidateArgIterator();
+            let re_index = GetValidateArgIterator(MAIN_POINT);
             if re_index == 0 {
                 break;
             }
@@ -78,4 +85,12 @@ pub extern "C" fn ValidateUserArgs() -> i32 {
             Err(_err) => util::string::DynamicString::from(_err.as_bytes()).get_index(),
         }
     }
+}
+
+#[no_mangle]
+pub extern "C" fn SetMainPoint(p: i64) -> i32 {
+    unsafe {
+        MAIN_POINT = p;
+    }
+    0
 }

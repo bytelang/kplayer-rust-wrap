@@ -6,6 +6,12 @@ pub enum MediaType {
     MediaTypeAudio,
 }
 
+pub struct Timer {
+    tid: i32,
+    milliseconds: u32,
+    func: fn(),
+}
+
 pub trait BasePlugin {
     // get plugin name
     fn get_name(&self) -> String;
@@ -29,4 +35,22 @@ pub trait BasePlugin {
     fn print_log(&self, level: super::util::os::PrintLogLevel, log: &str) {
         super::util::os::print_log(level, format!("[{}]", self.get_name()).to_string() + log)
     }
+
+    // get timer
+    fn get_timer(&self) -> &Vec<Timer> {
+        let empty: Vec<Timer>;
+        &empty
+    }
+
+    // get subscribe key
+    fn get_subscribe_keys(&self) -> &Vec<String> {
+        let empty: Vec<String>;
+        &empty
+    }
+
+    // execute timer
+    fn execute_timer(&self, tid: u32) {}
+
+    // execute message
+    fn execute_message(&self, action: super::proto::keys::EventAction, body: String) {}
 }
