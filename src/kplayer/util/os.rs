@@ -2,6 +2,7 @@
 extern "C" {
     fn FileExist(p: i32) -> i32;
     fn PrintLog(level: i32, p: i32) -> i32;
+    fn NowTimestamp() -> i64;
 }
 
 #[allow(dead_code)]
@@ -20,6 +21,11 @@ pub enum PrintLogLevel {
     INFO,
     ERROR,
     DEBUG,
+}
+
+#[allow(dead_code)]
+pub fn now_timestamp() -> i64 {
+    unsafe { NowTimestamp() }
 }
 
 #[allow(dead_code)]

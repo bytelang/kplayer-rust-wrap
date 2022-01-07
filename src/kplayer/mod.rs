@@ -4,20 +4,36 @@ pub mod util;
 
 #[allow(dead_code)]
 extern "C" {
-    fn GetValidateArgIterator(main_point: i64) -> i32;
-    fn UpdateArg(mp: i64, key: i32, value: i32) -> i32;
-    fn NewTimerTask(mp: i64, tid: i32, milliseconds: i32) -> i32;
-    fn RegisterMessageAction(mp: i64, action: i32) -> i32;
+    fn GetValidateArgIterator() -> i32;
+    fn NewTimerTask(tid: i32, milliseconds: i32) -> i32;
+    fn RegisterMessageAction(action: i32) -> i32;
     fn GetHistoryEventMessage(action: i32) -> i32;
 }
 
 static mut ARGS_INDEX: usize = 0;
 static mut INSTANCES: Vec<Box<dyn plugin::BasePlugin>> = Vec::new();
-static mut MAIN_POINT: i64 = 0;
 
 pub fn export_plugin(p: Box<dyn plugin::BasePlugin>) {
     unsafe {
         INSTANCES.push(p);
+    }
+}
+
+pub fn register_task() {
+    unsafe {
+        let task = INSTANCES[0].register_task();
+        for item in task {
+            NewTimerTask(item.get_tid(), item.get_milliseconds());
+        }
+    }
+}
+
+pub fn register_message() {
+    unsafe {
+        let task = INSTANCES[0].register_message_keys();
+        for item in task {
+            RegisterMessageAction(item as i32);
+        }
     }
 }
 
@@ -64,7 +80,7 @@ pub extern "C" fn ValidateUserArgs() -> i32 {
     unsafe {
         // get warp args
         loop {
-            let re_index = GetValidateArgIterator(MAIN_POINT);
+            let re_index = GetValidateArgIterator();
             if re_index == 0 {
                 break;
             }
@@ -88,9 +104,18 @@ pub extern "C" fn ValidateUserArgs() -> i32 {
 }
 
 #[no_mangle]
-pub extern "C" fn SetMainPoint(p: i64) -> i32 {
+pub extern "C" fn NotifyTask(_tid: i32) -> i32 {
     unsafe {
-        MAIN_POINT = p;
+        INSTANCES[0].execute_task(_tid as u32);
+    }
+    0
+}
+
+#[no_mangle]
+pub extern "C" fn NotifyMessage(action: i32, message: i32) -> i32 {
+    unsafe {
+        let body = util::string::DynamicString::receive(message).unwrap();
+        INSTANCES[0].execute_message(action, body);
     }
     0
 }

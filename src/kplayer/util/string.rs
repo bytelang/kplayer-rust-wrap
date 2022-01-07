@@ -15,7 +15,8 @@ impl DynamicString {
     }
 
     pub fn receive(index: i32) -> Result<String, &'static str> {
-        let mut str: String = String::new();
+        let mut collection: Vec<u8> = Vec::new();
+
         unsafe {
             let mut c: i32 = 0;
             loop {
@@ -23,13 +24,14 @@ impl DynamicString {
                 if char_u8 == 0 {
                     break;
                 }
-                str.push(char_u8 as char);
+                collection.push(char_u8);
 
                 c = c + 1;
             }
             DeleteString(index);
         }
 
+        let str = String::from_utf8(collection).unwrap();
         Ok(str)
     }
 

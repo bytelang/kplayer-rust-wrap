@@ -6,10 +6,25 @@ pub enum MediaType {
     MediaTypeAudio,
 }
 
+#[derive(Copy, Clone)]
+#[allow(dead_code)]
 pub struct Timer {
     tid: i32,
-    milliseconds: u32,
-    func: fn(),
+    milliseconds: i32,
+}
+impl Timer {
+    pub fn get_tid(&self) -> i32 {
+        self.tid
+    }
+    pub fn get_milliseconds(&self) -> i32 {
+        self.milliseconds
+    }
+    pub fn new(_tid: i32, _milliseconds: i32) -> Self {
+        Timer {
+            tid: _tid,
+            milliseconds: _milliseconds,
+        }
+    }
 }
 
 pub trait BasePlugin {
@@ -37,20 +52,22 @@ pub trait BasePlugin {
     }
 
     // get timer
-    fn get_timer(&self) -> &Vec<Timer> {
-        let empty: Vec<Timer>;
-        &empty
+    fn register_task(&self) -> Vec<Timer> {
+        let empty: Vec<Timer> = Vec::new();
+        empty
     }
 
     // get subscribe key
-    fn get_subscribe_keys(&self) -> &Vec<String> {
-        let empty: Vec<String>;
-        &empty
+    fn register_message_keys(&self) -> Vec<super::proto::keys::EventMessageAction> {
+        let empty: Vec<super::proto::keys::EventMessageAction> = Vec::new();
+        empty
     }
 
     // execute timer
-    fn execute_timer(&self, tid: u32) {}
+    #[warn(unused_variables)]
+    fn execute_task(&mut self, _tid: u32) {}
 
     // execute message
-    fn execute_message(&self, action: super::proto::keys::EventAction, body: String) {}
+    #[allow(unused_variables)]
+    fn execute_message(&mut self, action: i32, body: String) {}
 }
