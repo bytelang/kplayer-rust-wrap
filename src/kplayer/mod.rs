@@ -38,6 +38,13 @@ pub fn register_message() {
     }
 }
 
+pub fn get_history_message(action: proto::keys::EventMessageAction) -> String {
+    unsafe {
+        let msg_index = GetHistoryEventMessage(action as i32);
+        util::string::DynamicString::receive(msg_index).unwrap()
+    }
+}
+
 #[no_mangle]
 pub extern "C" fn GetFilterName() -> i32 {
     unsafe {
