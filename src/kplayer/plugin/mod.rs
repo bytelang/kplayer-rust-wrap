@@ -6,6 +6,11 @@ pub enum MediaType {
     MediaTypeAudio,
 }
 
+pub enum InstanceType {
+    InstanceTypeSide,
+    InstanceTypeLink,
+}
+
 #[derive(Copy, Clone)]
 #[allow(dead_code)]
 pub struct Timer {
@@ -35,7 +40,7 @@ pub trait BasePlugin {
     fn get_author(&self) -> String;
 
     // get plugin args
-    fn get_args(&self) -> Vec<String>;
+    fn get_args(&mut self, args: std::collections::HashMap<String, String>) -> Vec<String>;
 
     // get plugin filter name
     fn get_filter_name(&self) -> String;
@@ -44,7 +49,10 @@ pub trait BasePlugin {
     fn get_media_type(&self) -> MediaType;
 
     // validate args
-    fn validate_user_args(&self, args: &Vec<String>) -> Result<bool, &'static str>;
+    fn validate_user_args(
+        &self,
+        args: std::collections::HashMap<String, String>,
+    ) -> Result<bool, &'static str>;
 
     // print plugin log
     fn print_log(&self, level: super::util::os::PrintLogLevel, log: &str) {
@@ -70,4 +78,16 @@ pub trait BasePlugin {
     // execute message
     #[allow(unused_variables)]
     fn execute_message(&mut self, action: i32, body: String) {}
+
+    // get instance type
+    #[allow(unused_variables)]
+    fn get_instance_type(&mut self) -> InstanceType {
+        InstanceType::InstanceTypeLink
+    }
+
+    // hook created
+    #[allow(unused_variables)]
+    fn hook_created(&mut self) -> i32 {
+        0
+    }
 }

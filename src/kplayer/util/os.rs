@@ -6,7 +6,7 @@ extern "C" {
 }
 
 #[allow(dead_code)]
-pub fn file_exist(file_path: String) -> bool {
+pub fn file_exist(file_path: &String) -> bool {
     let str_i = super::string::DynamicString::from(file_path.as_bytes()).get_index();
     unsafe {
         if FileExist(str_i) == 0 {

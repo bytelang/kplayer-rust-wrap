@@ -71,8 +71,30 @@ pub extern "C" fn GetMediaType() -> i32 {
 
 #[no_mangle]
 pub extern "C" fn GetArgIterator() -> i32 {
+    let mut custom_args: Vec<String> = Vec::new();
+
     unsafe {
-        let args = INSTANCES[INSTANCES_INDEX].get_args();
+        // get custom args
+        loop {
+            let re_index = GetValidateArgIterator();
+            if re_index == 0 {
+                break;
+            }
+
+            match util::string::DynamicString::receive(re_index) {
+                Ok(_ok) => custom_args.push(_ok),
+                Err(_err) => {
+                    return util::string::DynamicString::from(
+                        String::from("plugin receive args error").as_bytes(),
+                    )
+                    .get_index()
+                }
+            }
+        }
+
+        // get plugin args
+        let args = INSTANCES[INSTANCES_INDEX]
+            .get_args(util::argument::args_vec_to_map(custom_args).unwrap());
 
         if ARGS_INDEX >= args.len() {
             return 0;
@@ -108,7 +130,9 @@ pub extern "C" fn ValidateUserArgs() -> i32 {
             }
         }
 
-        match INSTANCES[INSTANCES_INDEX].validate_user_args(&args) {
+        match INSTANCES[INSTANCES_INDEX]
+            .validate_user_args(util::argument::args_vec_to_map(args).unwrap())
+        {
             Ok(_s) => 0,
             Err(_err) => util::string::DynamicString::from(_err.as_bytes()).get_index(),
         }
@@ -148,4 +172,22 @@ pub extern "C" fn SetInstanceIndex(index: i64) -> i64 {
         INSTANCES_INDEX = index as usize;
         index
     }
+}
+
+#[no_mangle]
+pub extern "C" fn GetInstanceType(index: i64) -> i32 {
+    unsafe {
+        let count = INSTANCES.len() as i64;
+        if index > count - 1 {
+            return -1;
+        }
+
+        let instance_type = INSTANCES[index as usize].get_instance_type();
+        instance_type as i32
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn HookCreated() -> i32 {
+    unsafe { INSTANCES[INSTANCES_INDEX].hook_created() }
 }
