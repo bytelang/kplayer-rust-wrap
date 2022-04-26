@@ -29,7 +29,7 @@ pub fn now_timestamp() -> i64 {
 }
 
 #[allow(dead_code)]
-pub fn print_log(level: PrintLogLevel, str: String) {
+pub fn print_log(level: PrintLogLevel, str: &String) {
     let str_i = super::string::DynamicString::from(str.as_bytes()).get_index();
     unsafe {
         PrintLog(level as i32, str_i);

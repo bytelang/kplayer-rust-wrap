@@ -56,7 +56,7 @@ pub trait BasePlugin {
 
     // print plugin log
     fn print_log(&self, level: super::util::os::PrintLogLevel, log: &str) {
-        super::util::os::print_log(level, format!("[{}]", self.get_name()).to_string() + log)
+        super::util::os::print_log(level, &format!("[{}] {}", self.get_name(), log).to_string())
     }
 
     // get timer

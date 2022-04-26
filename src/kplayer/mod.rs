@@ -2,9 +2,12 @@ pub mod plugin;
 pub mod proto;
 pub mod util;
 
+super::version!();
+
 #[allow(dead_code)]
 extern "C" {
     fn GetValidateArgIterator() -> i32;
+    fn ResetValidateArgIterator() -> i32;
     fn NewTimerTask(tid: i32, milliseconds: i32) -> i32;
     fn RegisterMessageAction(action: i32) -> i32;
     fn GetHistoryEventMessage(action: i32) -> i32;
