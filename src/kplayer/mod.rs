@@ -14,6 +14,7 @@ extern "C" {
 }
 
 static mut ARGS_INDEX: usize = 0;
+static mut ALLOW_ARGS_INDEX: usize = 0;
 static mut INSTANCES: Vec<Box<dyn plugin::BasePlugin>> = Vec::new();
 static mut INSTANCES_INDEX: usize = 0;
 
@@ -45,6 +46,14 @@ pub fn get_history_message(action: proto::keys::EventMessageAction) -> String {
     unsafe {
         let msg_index = GetHistoryEventMessage(action as i32);
         util::string::DynamicString::receive(msg_index).unwrap()
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn GetName() -> i32 {
+    unsafe {
+        util::string::DynamicString::from(INSTANCES[INSTANCES_INDEX].get_name().as_bytes())
+            .get_index()
     }
 }
 
@@ -105,6 +114,24 @@ pub extern "C" fn GetArgIterator() -> i32 {
 
         let iterator = util::string::DynamicString::from(args[ARGS_INDEX].as_bytes()).get_index();
         ARGS_INDEX = ARGS_INDEX + 1;
+
+        iterator
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn GetAllowArgIterator() -> i32 {
+    unsafe {
+        // get plugin allow override args
+        let args = INSTANCES[INSTANCES_INDEX].get_allow_custom_args();
+
+        if ALLOW_ARGS_INDEX >= args.len() {
+            return 0;
+        }
+
+        let iterator =
+            util::string::DynamicString::from(args[ALLOW_ARGS_INDEX].as_bytes()).get_index();
+        ALLOW_ARGS_INDEX = ALLOW_ARGS_INDEX + 1;
 
         iterator
     }

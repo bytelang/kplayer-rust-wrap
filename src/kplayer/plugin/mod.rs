@@ -42,6 +42,12 @@ pub trait BasePlugin {
     // get plugin args
     fn get_args(&mut self, args: std::collections::HashMap<String, String>) -> Vec<String>;
 
+    // get plugin allow custom args
+    fn get_allow_custom_args(&self) -> Vec<&'static str> {
+        let vec: Vec<&'static str> = Vec::new();
+        vec
+    }
+
     // get plugin filter name
     fn get_filter_name(&self) -> String;
 
