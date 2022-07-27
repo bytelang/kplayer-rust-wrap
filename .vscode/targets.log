@@ -10,17 +10,18 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 make: *** No rule to make target `all'.  Stop.
 
 
-# Make data base, printed on Thu May  5 13:22:49 2022
+# Make data base, printed on Wed Jul 27 09:58:00 2022
 
 # Variables
 
 # automatic
 <D = $(patsubst %/,%,$(dir $<))
- 
 # automatic
 ?F = $(notdir $?)
 # environment
-VSCODE_LOG_NATIVE = false
+ELECTRON_NO_ATTACH_CONSOLE = 1
+# environment
+DISABLE_AUTO_UPDATE = true
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # automatic
@@ -40,37 +41,36 @@ _ = /usr/bin/make
 # makefile
 MAKEFILE_LIST := 
 # environment
-VSCODE_VERBOSE_LOGGING = true
+JAVA_HOME = /opt/local/zulu8.56.0.23-ca-jdk8.0.302-macosx_aarch64
 # environment
 __CFBundleIdentifier = com.microsoft.VSCodeInsiders
 # environment
-CGO_CFLAGS = -I/opt/local/zulu8.56.0.21-ca-jdk8.0.302-macosx_x64/include -I/opt/local/zulu8.56.0.21-ca-jdk8.0.302-macosx_x64/include/darwin
+CGO_CFLAGS = -I/opt/local/zulu8.56.0.23-ca-jdk8.0.302-macosx_aarch64/include -I/opt/local/zulu8.56.0.23-ca-jdk8.0.302-macosx_aarch64/include/darwin
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /var/folders/xh/jcfp5l3n30b3c0qd4hv4dp5c0000gn/T/vscode-ipc-e0888406-3adf-4375-8ff2-d7cceffe2378.sock
+VSCODE_CWD = /Users/kangkai/smart/develop/rust/rust-wrap
 # environment
-VSCODE_CWD = /
-# environment
+ 
 GOPROXY = https://goproxy.cn
 # environment
 PATH = /opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin:/Users/kangkai/.cargo/bin:/Users/kangkai/go/bin:/opt/local/node-v16.14.2-darwin-arm64/bin:/opt/homebrew/bin:/usr/local/mysql/bin
 # environment
+DISABLE_UPDATE_PROMPT = true
+# environment
 LSCOLORS = Gxfxcxdxbxegedabagacad
 # environment
-VSCODE_LOG_STACK = true
+LaunchInstanceID = 4BD057F3-2C57-46CF-9D22-2746A1F7DA20
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.wTMItA8dyH/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.SzcQQTq0Nk/Listeners
 # automatic
 %F = $(notdir $%)
 # environment
-VSCODE_PIPE_LOGGING = true
-# environment
 PWD = /Users/kangkai/smart/develop/rust/rust-wrap
 # environment
-PKG_CONFIG_PATH = :/opt/local/lib
+PKG_CONFIG_PATH = :/opt/local/lib:/usr/local/lib/pkgconfig:/opt/local/lib/openssl-1.1/pkgconfig/
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = undefined
 # environment
@@ -80,11 +80,13 @@ HOME = /Users/kangkai
 # default
 MAKEFILEPATH := /Applications/Xcode.app/Contents/Developer/Makefiles
 # environment
-VSCODE_CODE_CACHE_PATH = /Users/kangkai/Library/Application Support/Code - Insiders/CachedData/ab86e0229d6b4d0cb49cfd6747c92cafcd2bd4af
+VSCODE_CLI = 1
+# environment
+VSCODE_CODE_CACHE_PATH = /Users/kangkai/Library/Application Support/Code - Insiders/CachedData/3da2d669a4dcf93938a262ba92f50b128ca7262a
 # environment
 LOGNAME = kangkai
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # environment
 ZSH = /Users/kangkai/.oh-my-zsh
 # environment
@@ -95,30 +97,36 @@ VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 MFLAGS = -Rrqp
 # environment
 XPC_FLAGS = 0x0
+# environment
+COLORTERM = truecolor
 # default
 MAKE = $(MAKE_COMMAND)
-# default
-MAKECMDGOALS := all
 # environment
-SHLVL = 1
+LC_TERMINAL = iTerm2
 # environment
-JAVA_HOME = /opt/local/zulu8.56.0.21-ca-jdk8.0.302-macosx_x64
+SHLVL = 3
+# environment
+TERM_SESSION_ID = w0t0p0:F4B7CB73-0853-4258-ACDD-3CA39C312B9C
 # default
 MAKE_VERSION := 3.81
 # environment
 USER = kangkai
 # makefile
 .DEFAULT_GOAL := 
+# default
+MAKECMDGOALS := all
 # environment
 HOMEBREW_BOTTLE_DOMAIN = https://mirrors.aliyun.com/homebrew/homebrew-bottles
 # environment
-CLASSPATH = /opt/local/zulu8.56.0.21-ca-jdk8.0.302-macosx_x64/lib/tools.jar:/opt/local/zulu8.56.0.21-ca-jdk8.0.302-macosx_x64/lib/dt.jar:.
+CLASSPATH = /opt/local/zulu8.56.0.23-ca-jdk8.0.302-macosx_aarch64/lib/tools.jar:/opt/local/zulu8.56.0.23-ca-jdk8.0.302-macosx_aarch64/lib/dt.jar:.
 # environment
 LESS = -R
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
 # default
 MAKE_COMMAND := /Applications/Xcode.app/Contents/Developer/usr/bin/make
+# environment
+TERM_PROGRAM = iTerm.app
 # default
 .VARIABLES := 
 # environment
@@ -126,19 +134,29 @@ TMPDIR = /var/folders/xh/jcfp5l3n30b3c0qd4hv4dp5c0000gn/T/
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /Users/kangkai/Library/Application Support/Code - Insiders/1.67.0-insider-main.sock
+VSCODE_IPC_HOOK = /Users/kangkai/Library/Application Support/Code - Insiders/1.70.0-insider-main.sock
+# environment
+MallocNanoZone = 0
 # makefile
 MAKEFLAGS = Rrqp
 # environment
-CGO_LDFLAGS = -L/opt/local/zulu8.56.0.21-ca-jdk8.0.302-macosx_x64/jre/lib/server/ -ljvm -Wl,-rpath,/opt/local/zulu8.56.0.21-ca-jdk8.0.302-macosx_x64/jre/lib/server/
+CGO_LDFLAGS = -L/opt/local/zulu8.56.0.23-ca-jdk8.0.302-macosx_aarch64/jre/lib/server/ -ljvm -Wl,-rpath,/opt/local/zulu8.56.0.23-ca-jdk8.0.302-macosx_aarch64/jre/lib/server/
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-XPC_SERVICE_NAME = application.com.microsoft.VSCodeInsiders.7611166.7611184
+TERM_PROGRAM_VERSION = 3.4.15
+# environment
+XPC_SERVICE_NAME = application.com.microsoft.VSCodeInsiders.19047083.19047089.CFFDA7A2-1AA4-4434-AF16-E2486800B85F
+# environment
+LC_TERMINAL_VERSION = 3.4.15
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # automatic
 +F = $(notdir $+)
+# environment
+ITERM_SESSION_ID = w0t0p0:F4B7CB73-0853-4258-ACDD-3CA39C312B9C
+# environment
+COLORFGBG = 15;0
 # environment
 __CF_USER_TEXT_ENCODING = 0x1F5:0x19:0x34
 # environment
@@ -148,22 +166,29 @@ MAKEFILES :=
 # automatic
 <F = $(notdir $<)
 # environment
+ITERM_PROFILE = Default
+# environment
 PAGER = less
 # environment
 LC_ALL = C
+# environment
+SECURITYSESSIONID = 186b2
 # automatic
 ^F = $(notdir $^)
 # default
 SUFFIXES := 
+# default
+.INCLUDE_DIRS = /usr/local/include
 # environment
 MAKELEVEL := 0
 # environment
- 
 LANG = C
 # environment
-VSCODE_PID = 72003
+TERM = xterm-256color
+# environment
+VSCODE_PID = 45671
 # variable set hash-table stats:
-# Load=73/1024=7%, Rehash=0, Collisions=5/93=5%
+# Load=86/1024=8%, Rehash=0, Collisions=10/107=9%
 
 # Pattern-specific Variable Values
 
@@ -171,7 +196,7 @@ VSCODE_PID = 72003
 
 # Directories
 
-# . (device 16777229, inode 1798729): 10 files, no impossibilities.
+# . (device 16777234, inode 1798729): 10 files, no impossibilities.
 
 # 10 files, no impossibilities in 1 directories.
 
@@ -245,6 +270,6 @@ GNUmakefile:
 # strcache size: total = 0 / max = 0 / min = 4096 / avg = 0
 # strcache free: total = 0 / max = 0 / min = 4096 / avg = 0
 
-# Finished Make data base on Thu May  5 13:22:49 2022
+# Finished Make data base on Wed Jul 27 09:58:00 2022
 
  
