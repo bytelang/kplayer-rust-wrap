@@ -704,33 +704,211 @@ impl ::protobuf::reflect::ProtobufValue for EventPromptResourceCurrent {
     }
 }
 
+#[derive(PartialEq,Clone,Default)]
+pub struct EventPromptResourceSeek {
+    // message fields
+    pub resource: ::protobuf::SingularPtrField<super::keys::PromptResource>,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a EventPromptResourceSeek {
+    fn default() -> &'a EventPromptResourceSeek {
+        <EventPromptResourceSeek as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl EventPromptResourceSeek {
+    pub fn new() -> EventPromptResourceSeek {
+        ::std::default::Default::default()
+    }
+
+    // .KPProto.PromptResource resource = 1;
+
+
+    pub fn get_resource(&self) -> &super::keys::PromptResource {
+        self.resource.as_ref().unwrap_or_else(|| <super::keys::PromptResource as ::protobuf::Message>::default_instance())
+    }
+    pub fn clear_resource(&mut self) {
+        self.resource.clear();
+    }
+
+    pub fn has_resource(&self) -> bool {
+        self.resource.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_resource(&mut self, v: super::keys::PromptResource) {
+        self.resource = ::protobuf::SingularPtrField::some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_resource(&mut self) -> &mut super::keys::PromptResource {
+        if self.resource.is_none() {
+            self.resource.set_default();
+        }
+        self.resource.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_resource(&mut self) -> super::keys::PromptResource {
+        self.resource.take().unwrap_or_else(|| super::keys::PromptResource::new())
+    }
+}
+
+impl ::protobuf::Message for EventPromptResourceSeek {
+    fn is_initialized(&self) -> bool {
+        for v in &self.resource {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.resource)?;
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(ref v) = self.resource.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(ref v) = self.resource.as_ref() {
+            os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_raw_varint32(v.get_cached_size())?;
+            v.write_to_with_cached_sizes(os)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn as_any(&self) -> &dyn (::std::any::Any) {
+        self as &dyn (::std::any::Any)
+    }
+    fn as_any_mut(&mut self) -> &mut dyn (::std::any::Any) {
+        self as &mut dyn (::std::any::Any)
+    }
+    fn into_any(self: ::std::boxed::Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
+        self
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        Self::descriptor_static()
+    }
+
+    fn new() -> EventPromptResourceSeek {
+        EventPromptResourceSeek::new()
+    }
+
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<super::keys::PromptResource>>(
+                "resource",
+                |m: &EventPromptResourceSeek| { &m.resource },
+                |m: &mut EventPromptResourceSeek| { &mut m.resource },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<EventPromptResourceSeek>(
+                "EventPromptResourceSeek",
+                fields,
+                file_descriptor_proto()
+            )
+        })
+    }
+
+    fn default_instance() -> &'static EventPromptResourceSeek {
+        static instance: ::protobuf::rt::LazyV2<EventPromptResourceSeek> = ::protobuf::rt::LazyV2::INIT;
+        instance.get(EventPromptResourceSeek::new)
+    }
+}
+
+impl ::protobuf::Clear for EventPromptResourceSeek {
+    fn clear(&mut self) {
+        self.resource.clear();
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for EventPromptResourceSeek {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for EventPromptResourceSeek {
+    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
+        ::protobuf::reflect::ReflectValueRef::Message(self)
+    }
+}
+
 static file_descriptor_proto_data: &'static [u8] = b"\
-    \n\"proto/prompt/prompt_resource.proto\x12\x0eKPProto.Prompt\x1a\x14gogo\
-    proto/gogo.proto\x1a\x10proto/keys.proto\"S\n\x16EventPromptResourceAdd\
-    \x129\n\x08resource\x18\x01\x20\x01(\x0b2\x17.KPProto.PromptResourceR\
-    \x08resourceB\x04\xc8\xde\x1f\x01\"3\n\x19EventPromptResourceRemove\x12\
-    \x16\n\x06unique\x18\x01\x20\x01(\tR\x06unique\"\x19\n\x17EventPromptRes\
-    ourceList\"\x1c\n\x1aEventPromptResourceHistory\"\x1c\n\x1aEventPromptRe\
-    sourceCurrentB5Z3github.com/bytelang/kplayer/types/core/proto/promptJ\
-    \xdb\x03\n\x06\x12\x04\0\0\x1d\x01\n\x08\n\x01\x0c\x12\x03\0\0\x12\n\x08\
-    \n\x01\x02\x12\x03\x02\0\x17\n\x08\n\x01\x08\x12\x03\x04\0J\n\t\n\x02\
-    \x08\x0b\x12\x03\x04\0J\n\t\n\x02\x03\0\x12\x03\x06\0\x1e\n\t\n\x02\x03\
-    \x01\x12\x03\x07\0\x1a\n\x1a\n\x02\x04\0\x12\x04\n\0\x0c\x01\x1a\x0e\x20\
-    add\x20resource\n\n\n\n\x03\x04\0\x01\x12\x03\n\x08\x1e\n\x0b\n\x04\x04\
-    \0\x02\0\x12\x03\x0b\x08B\n\x0c\n\x05\x04\0\x02\0\x06\x12\x03\x0b\x08\
-    \x16\n\x0c\n\x05\x04\0\x02\0\x01\x12\x03\x0b\x17\x1f\n\x0c\n\x05\x04\0\
-    \x02\0\x03\x12\x03\x0b\"#\n\x0c\n\x05\x04\0\x02\0\x08\x12\x03\x0b$A\n\
-    \x0f\n\x08\x04\0\x02\0\x08\xe9\xfb\x03\x12\x03\x0b%@\n2\n\x02\x04\x01\
-    \x12\x04\x0f\0\x11\x01\x1a&\x20remove\x20matching\x20unique\x20name\x20r\
-    esource\n\n\n\n\x03\x04\x01\x01\x12\x03\x0f\x08!\n\x0b\n\x04\x04\x01\x02\
-    \0\x12\x03\x10\x08\x1a\n\x0c\n\x05\x04\x01\x02\0\x05\x12\x03\x10\x08\x0e\
-    \n\x0c\n\x05\x04\x01\x02\0\x01\x12\x03\x10\x0f\x15\n\x0c\n\x05\x04\x01\
-    \x02\0\x03\x12\x03\x10\x18\x19\n.\n\x02\x04\x02\x12\x04\x14\0\x15\x01\
-    \x1a\"\x20get\x20player\x20current\x20resource\x20list\n\n\n\n\x03\x04\
-    \x02\x01\x12\x03\x14\x08\x1f\n%\n\x02\x04\x03\x12\x04\x18\0\x19\x01\x1a\
-    \x19\x20get\x20player\x20play\x20history\n\n\n\n\x03\x04\x03\x01\x12\x03\
-    \x18\x08\"\n\"\n\x02\x04\x04\x12\x04\x1c\0\x1d\x01\x1a\x16\x20get\x20cur\
-    rent\x20resource\n\n\n\n\x03\x04\x04\x01\x12\x03\x1c\x08\"b\x06proto3\
+    \n\"proto/prompt/prompt_resource.proto\x12\x0eKPProto.Prompt\x1a\x10prot\
+    o/keys.proto\"M\n\x16EventPromptResourceAdd\x123\n\x08resource\x18\x01\
+    \x20\x01(\x0b2\x17.KPProto.PromptResourceR\x08resource\"3\n\x19EventProm\
+    ptResourceRemove\x12\x16\n\x06unique\x18\x01\x20\x01(\tR\x06unique\"\x19\
+    \n\x17EventPromptResourceList\"\x1c\n\x1aEventPromptResourceHistory\"\
+    \x1c\n\x1aEventPromptResourceCurrent\"N\n\x17EventPromptResourceSeek\x12\
+    3\n\x08resource\x18\x01\x20\x01(\x0b2\x17.KPProto.PromptResourceR\x08res\
+    ourceB5Z3github.com/bytelang/kplayer/types/core/proto/promptJ\x91\x04\n\
+    \x06\x12\x04\0\0!\x01\n\x08\n\x01\x0c\x12\x03\0\0\x12\n\x08\n\x01\x02\
+    \x12\x03\x02\0\x17\n\x08\n\x01\x08\x12\x03\x04\0J\n\t\n\x02\x08\x0b\x12\
+    \x03\x04\0J\n\t\n\x02\x03\0\x12\x03\x06\0\x1a\n\x1a\n\x02\x04\0\x12\x04\
+    \t\0\x0b\x01\x1a\x0e\x20add\x20resource\n\n\n\n\x03\x04\0\x01\x12\x03\t\
+    \x08\x1e\n\x0b\n\x04\x04\0\x02\0\x12\x03\n\x02\x1e\n\x0c\n\x05\x04\0\x02\
+    \0\x06\x12\x03\n\x02\x10\n\x0c\n\x05\x04\0\x02\0\x01\x12\x03\n\x11\x19\n\
+    \x0c\n\x05\x04\0\x02\0\x03\x12\x03\n\x1c\x1d\n2\n\x02\x04\x01\x12\x04\
+    \x0e\0\x10\x01\x1a&\x20remove\x20matching\x20unique\x20name\x20resource\
+    \n\n\n\n\x03\x04\x01\x01\x12\x03\x0e\x08!\n\x0b\n\x04\x04\x01\x02\0\x12\
+    \x03\x0f\x02\x14\n\x0c\n\x05\x04\x01\x02\0\x05\x12\x03\x0f\x02\x08\n\x0c\
+    \n\x05\x04\x01\x02\0\x01\x12\x03\x0f\t\x0f\n\x0c\n\x05\x04\x01\x02\0\x03\
+    \x12\x03\x0f\x12\x13\n.\n\x02\x04\x02\x12\x04\x13\0\x14\x01\x1a\"\x20get\
+    \x20player\x20current\x20resource\x20list\n\n\n\n\x03\x04\x02\x01\x12\
+    \x03\x13\x08\x1f\n%\n\x02\x04\x03\x12\x04\x17\0\x18\x01\x1a\x19\x20get\
+    \x20player\x20play\x20history\n\n\n\n\x03\x04\x03\x01\x12\x03\x17\x08\"\
+    \n\"\n\x02\x04\x04\x12\x04\x1b\0\x1c\x01\x1a\x16\x20get\x20current\x20re\
+    source\n\n\n\n\x03\x04\x04\x01\x12\x03\x1b\x08\"\n\x1b\n\x02\x04\x05\x12\
+    \x04\x1f\0!\x01\x1a\x0f\x20seek\x20resource\n\n\n\n\x03\x04\x05\x01\x12\
+    \x03\x1f\x08\x1f\n\x0b\n\x04\x04\x05\x02\0\x12\x03\x20\x02\x1e\n\x0c\n\
+    \x05\x04\x05\x02\0\x06\x12\x03\x20\x02\x10\n\x0c\n\x05\x04\x05\x02\0\x01\
+    \x12\x03\x20\x11\x19\n\x0c\n\x05\x04\x05\x02\0\x03\x12\x03\x20\x1c\x1db\
+    \x06proto3\
 ";
 
 static file_descriptor_proto_lazy: ::protobuf::rt::LazyV2<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::rt::LazyV2::INIT;

@@ -818,6 +818,165 @@ impl ::protobuf::reflect::ProtobufValue for EventMessagePlayerSkip {
     }
 }
 
+#[derive(PartialEq,Clone,Default)]
+pub struct EventMessagePlayerStop {
+    // message fields
+    pub error: ::std::string::String,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a EventMessagePlayerStop {
+    fn default() -> &'a EventMessagePlayerStop {
+        <EventMessagePlayerStop as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl EventMessagePlayerStop {
+    pub fn new() -> EventMessagePlayerStop {
+        ::std::default::Default::default()
+    }
+
+    // string error = 1;
+
+
+    pub fn get_error(&self) -> &str {
+        &self.error
+    }
+    pub fn clear_error(&mut self) {
+        self.error.clear();
+    }
+
+    // Param is passed by value, moved
+    pub fn set_error(&mut self, v: ::std::string::String) {
+        self.error = v;
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_error(&mut self) -> &mut ::std::string::String {
+        &mut self.error
+    }
+
+    // Take field
+    pub fn take_error(&mut self) -> ::std::string::String {
+        ::std::mem::replace(&mut self.error, ::std::string::String::new())
+    }
+}
+
+impl ::protobuf::Message for EventMessagePlayerStop {
+    fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.error)?;
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if !self.error.is_empty() {
+            my_size += ::protobuf::rt::string_size(1, &self.error);
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if !self.error.is_empty() {
+            os.write_string(1, &self.error)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn as_any(&self) -> &dyn (::std::any::Any) {
+        self as &dyn (::std::any::Any)
+    }
+    fn as_any_mut(&mut self) -> &mut dyn (::std::any::Any) {
+        self as &mut dyn (::std::any::Any)
+    }
+    fn into_any(self: ::std::boxed::Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
+        self
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        Self::descriptor_static()
+    }
+
+    fn new() -> EventMessagePlayerStop {
+        EventMessagePlayerStop::new()
+    }
+
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                "error",
+                |m: &EventMessagePlayerStop| { &m.error },
+                |m: &mut EventMessagePlayerStop| { &mut m.error },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<EventMessagePlayerStop>(
+                "EventMessagePlayerStop",
+                fields,
+                file_descriptor_proto()
+            )
+        })
+    }
+
+    fn default_instance() -> &'static EventMessagePlayerStop {
+        static instance: ::protobuf::rt::LazyV2<EventMessagePlayerStop> = ::protobuf::rt::LazyV2::INIT;
+        instance.get(EventMessagePlayerStop::new)
+    }
+}
+
+impl ::protobuf::Clear for EventMessagePlayerStop {
+    fn clear(&mut self) {
+        self.error.clear();
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for EventMessagePlayerStop {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for EventMessagePlayerStop {
+    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
+        ::protobuf::reflect::ReflectValueRef::Message(self)
+    }
+}
+
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\x1aproto/msg/msg_player.proto\x12\x0bKPProto.Msg\"1\n\x19EventMessage\
     PlayerStarted\x12\x14\n\x05error\x18\x01\x20\x01(\tR\x05error\"/\n\x17Ev\
@@ -825,29 +984,34 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \n\x17EventMessagePlayerPause\x12\x14\n\x05error\x18\x01\x20\x01(\tR\x05\
     error\"2\n\x1aEventMessagePlayerContinue\x12\x14\n\x05error\x18\x01\x20\
     \x01(\tR\x05error\".\n\x16EventMessagePlayerSkip\x12\x14\n\x05error\x18\
-    \x01\x20\x01(\tR\x05errorB2Z0github.com/bytelang/kplayer/types/core/prot\
-    o/msgJ\xbc\x03\n\x06\x12\x04\0\0\x18\x01\n\x08\n\x01\x0c\x12\x03\0\0\x12\
-    \n\x08\n\x01\x02\x12\x03\x02\0\x14\n\x08\n\x01\x08\x12\x03\x04\0G\n\t\n\
-    \x02\x08\x0b\x12\x03\x04\0G\n\n\n\x02\x04\0\x12\x04\x06\0\x08\x01\n\n\n\
-    \x03\x04\0\x01\x12\x03\x06\x08!\n\x0b\n\x04\x04\0\x02\0\x12\x03\x07\x08\
-    \x19\n\x0c\n\x05\x04\0\x02\0\x05\x12\x03\x07\x08\x0e\n\x0c\n\x05\x04\0\
-    \x02\0\x01\x12\x03\x07\x0f\x14\n\x0c\n\x05\x04\0\x02\0\x03\x12\x03\x07\
-    \x17\x18\n\n\n\x02\x04\x01\x12\x04\n\0\x0c\x01\n\n\n\x03\x04\x01\x01\x12\
-    \x03\n\x08\x1f\n\x0b\n\x04\x04\x01\x02\0\x12\x03\x0b\x08\x19\n\x0c\n\x05\
-    \x04\x01\x02\0\x05\x12\x03\x0b\x08\x0e\n\x0c\n\x05\x04\x01\x02\0\x01\x12\
-    \x03\x0b\x0f\x14\n\x0c\n\x05\x04\x01\x02\0\x03\x12\x03\x0b\x17\x18\n\n\n\
-    \x02\x04\x02\x12\x04\x0e\0\x10\x01\n\n\n\x03\x04\x02\x01\x12\x03\x0e\x08\
-    \x1f\n\x0b\n\x04\x04\x02\x02\0\x12\x03\x0f\x08\x19\n\x0c\n\x05\x04\x02\
-    \x02\0\x05\x12\x03\x0f\x08\x0e\n\x0c\n\x05\x04\x02\x02\0\x01\x12\x03\x0f\
-    \x0f\x14\n\x0c\n\x05\x04\x02\x02\0\x03\x12\x03\x0f\x17\x18\n\n\n\x02\x04\
-    \x03\x12\x04\x12\0\x14\x01\n\n\n\x03\x04\x03\x01\x12\x03\x12\x08\"\n\x0b\
-    \n\x04\x04\x03\x02\0\x12\x03\x13\x08\x19\n\x0c\n\x05\x04\x03\x02\0\x05\
-    \x12\x03\x13\x08\x0e\n\x0c\n\x05\x04\x03\x02\0\x01\x12\x03\x13\x0f\x14\n\
-    \x0c\n\x05\x04\x03\x02\0\x03\x12\x03\x13\x17\x18\n\n\n\x02\x04\x04\x12\
+    \x01\x20\x01(\tR\x05error\".\n\x16EventMessagePlayerStop\x12\x14\n\x05er\
+    ror\x18\x01\x20\x01(\tR\x05errorB2Z0github.com/bytelang/kplayer/types/co\
+    re/proto/msgJ\x8b\x04\n\x06\x12\x04\0\0\x1c\x01\n\x08\n\x01\x0c\x12\x03\
+    \0\0\x12\n\x08\n\x01\x02\x12\x03\x02\0\x14\n\x08\n\x01\x08\x12\x03\x04\0\
+    G\n\t\n\x02\x08\x0b\x12\x03\x04\0G\n\n\n\x02\x04\0\x12\x04\x06\0\x08\x01\
+    \n\n\n\x03\x04\0\x01\x12\x03\x06\x08!\n\x0b\n\x04\x04\0\x02\0\x12\x03\
+    \x07\x02\x13\n\x0c\n\x05\x04\0\x02\0\x05\x12\x03\x07\x02\x08\n\x0c\n\x05\
+    \x04\0\x02\0\x01\x12\x03\x07\t\x0e\n\x0c\n\x05\x04\0\x02\0\x03\x12\x03\
+    \x07\x11\x12\n\n\n\x02\x04\x01\x12\x04\n\0\x0c\x01\n\n\n\x03\x04\x01\x01\
+    \x12\x03\n\x08\x1f\n\x0b\n\x04\x04\x01\x02\0\x12\x03\x0b\x02\x13\n\x0c\n\
+    \x05\x04\x01\x02\0\x05\x12\x03\x0b\x02\x08\n\x0c\n\x05\x04\x01\x02\0\x01\
+    \x12\x03\x0b\t\x0e\n\x0c\n\x05\x04\x01\x02\0\x03\x12\x03\x0b\x11\x12\n\n\
+    \n\x02\x04\x02\x12\x04\x0e\0\x10\x01\n\n\n\x03\x04\x02\x01\x12\x03\x0e\
+    \x08\x1f\n\x0b\n\x04\x04\x02\x02\0\x12\x03\x0f\x02\x13\n\x0c\n\x05\x04\
+    \x02\x02\0\x05\x12\x03\x0f\x02\x08\n\x0c\n\x05\x04\x02\x02\0\x01\x12\x03\
+    \x0f\t\x0e\n\x0c\n\x05\x04\x02\x02\0\x03\x12\x03\x0f\x11\x12\n\n\n\x02\
+    \x04\x03\x12\x04\x12\0\x14\x01\n\n\n\x03\x04\x03\x01\x12\x03\x12\x08\"\n\
+    \x0b\n\x04\x04\x03\x02\0\x12\x03\x13\x02\x13\n\x0c\n\x05\x04\x03\x02\0\
+    \x05\x12\x03\x13\x02\x08\n\x0c\n\x05\x04\x03\x02\0\x01\x12\x03\x13\t\x0e\
+    \n\x0c\n\x05\x04\x03\x02\0\x03\x12\x03\x13\x11\x12\n\n\n\x02\x04\x04\x12\
     \x04\x16\0\x18\x01\n\n\n\x03\x04\x04\x01\x12\x03\x16\x08\x1e\n\x0b\n\x04\
-    \x04\x04\x02\0\x12\x03\x17\x08\x19\n\x0c\n\x05\x04\x04\x02\0\x05\x12\x03\
-    \x17\x08\x0e\n\x0c\n\x05\x04\x04\x02\0\x01\x12\x03\x17\x0f\x14\n\x0c\n\
-    \x05\x04\x04\x02\0\x03\x12\x03\x17\x17\x18b\x06proto3\
+    \x04\x04\x02\0\x12\x03\x17\x02\x13\n\x0c\n\x05\x04\x04\x02\0\x05\x12\x03\
+    \x17\x02\x08\n\x0c\n\x05\x04\x04\x02\0\x01\x12\x03\x17\t\x0e\n\x0c\n\x05\
+    \x04\x04\x02\0\x03\x12\x03\x17\x11\x12\n\n\n\x02\x04\x05\x12\x04\x1a\0\
+    \x1c\x01\n\n\n\x03\x04\x05\x01\x12\x03\x1a\x08\x1e\n\x0b\n\x04\x04\x05\
+    \x02\0\x12\x03\x1b\x02\x13\n\x0c\n\x05\x04\x05\x02\0\x05\x12\x03\x1b\x02\
+    \x08\n\x0c\n\x05\x04\x05\x02\0\x01\x12\x03\x1b\t\x0e\n\x0c\n\x05\x04\x05\
+    \x02\0\x03\x12\x03\x1b\x11\x12b\x06proto3\
 ";
 
 static file_descriptor_proto_lazy: ::protobuf::rt::LazyV2<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::rt::LazyV2::INIT;

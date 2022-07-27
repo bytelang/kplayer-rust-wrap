@@ -246,6 +246,7 @@ pub struct EventMessageResourceChecked {
     pub input_attribute: ::protobuf::SingularPtrField<EventMessageResourceInputAttribute>,
     pub output_option: ::protobuf::SingularPtrField<EventMessageResourceCheckedOutputOption>,
     pub error: ::std::string::String,
+    pub hit_cache: bool,
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
     pub cached_size: ::protobuf::CachedSize,
@@ -386,6 +387,21 @@ impl EventMessageResourceChecked {
     pub fn take_error(&mut self) -> ::std::string::String {
         ::std::mem::replace(&mut self.error, ::std::string::String::new())
     }
+
+    // bool hit_cache = 5;
+
+
+    pub fn get_hit_cache(&self) -> bool {
+        self.hit_cache
+    }
+    pub fn clear_hit_cache(&mut self) {
+        self.hit_cache = false;
+    }
+
+    // Param is passed by value, moved
+    pub fn set_hit_cache(&mut self, v: bool) {
+        self.hit_cache = v;
+    }
 }
 
 impl ::protobuf::Message for EventMessageResourceChecked {
@@ -424,6 +440,13 @@ impl ::protobuf::Message for EventMessageResourceChecked {
                 4 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.error)?;
                 },
+                5 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    let tmp = is.read_bool()?;
+                    self.hit_cache = tmp;
+                },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
@@ -451,6 +474,9 @@ impl ::protobuf::Message for EventMessageResourceChecked {
         if !self.error.is_empty() {
             my_size += ::protobuf::rt::string_size(4, &self.error);
         }
+        if self.hit_cache != false {
+            my_size += 2;
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -474,6 +500,9 @@ impl ::protobuf::Message for EventMessageResourceChecked {
         }
         if !self.error.is_empty() {
             os.write_string(4, &self.error)?;
+        }
+        if self.hit_cache != false {
+            os.write_bool(5, self.hit_cache)?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -533,6 +562,11 @@ impl ::protobuf::Message for EventMessageResourceChecked {
                 |m: &EventMessageResourceChecked| { &m.error },
                 |m: &mut EventMessageResourceChecked| { &mut m.error },
             ));
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+                "hit_cache",
+                |m: &EventMessageResourceChecked| { &m.hit_cache },
+                |m: &mut EventMessageResourceChecked| { &mut m.hit_cache },
+            ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<EventMessageResourceChecked>(
                 "EventMessageResourceChecked",
                 fields,
@@ -553,6 +587,7 @@ impl ::protobuf::Clear for EventMessageResourceChecked {
         self.input_attribute.clear();
         self.output_option.clear();
         self.error.clear();
+        self.hit_cache = false;
         self.unknown_fields.clear();
     }
 }
@@ -2277,8 +2312,8 @@ pub struct EventMessageResourceCurrent {
     pub resource: ::protobuf::SingularPtrField<super::keys::MessageResource>,
     pub duration: u64,
     pub seek: i64,
-    pub error: ::std::string::String,
     pub hit_cache: bool,
+    pub error: ::std::string::String,
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
     pub cached_size: ::protobuf::CachedSize,
@@ -2358,7 +2393,22 @@ impl EventMessageResourceCurrent {
         self.seek = v;
     }
 
-    // string error = 4;
+    // bool hit_cache = 4;
+
+
+    pub fn get_hit_cache(&self) -> bool {
+        self.hit_cache
+    }
+    pub fn clear_hit_cache(&mut self) {
+        self.hit_cache = false;
+    }
+
+    // Param is passed by value, moved
+    pub fn set_hit_cache(&mut self, v: bool) {
+        self.hit_cache = v;
+    }
+
+    // string error = 5;
 
 
     pub fn get_error(&self) -> &str {
@@ -2382,21 +2432,6 @@ impl EventMessageResourceCurrent {
     // Take field
     pub fn take_error(&mut self) -> ::std::string::String {
         ::std::mem::replace(&mut self.error, ::std::string::String::new())
-    }
-
-    // bool hit_cache = 5;
-
-
-    pub fn get_hit_cache(&self) -> bool {
-        self.hit_cache
-    }
-    pub fn clear_hit_cache(&mut self) {
-        self.hit_cache = false;
-    }
-
-    // Param is passed by value, moved
-    pub fn set_hit_cache(&mut self, v: bool) {
-        self.hit_cache = v;
     }
 }
 
@@ -2432,14 +2467,14 @@ impl ::protobuf::Message for EventMessageResourceCurrent {
                     self.seek = tmp;
                 },
                 4 => {
-                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.error)?;
-                },
-                5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.hit_cache = tmp;
+                },
+                5 => {
+                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.error)?;
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -2463,11 +2498,11 @@ impl ::protobuf::Message for EventMessageResourceCurrent {
         if self.seek != 0 {
             my_size += ::protobuf::rt::value_size(3, self.seek, ::protobuf::wire_format::WireTypeVarint);
         }
-        if !self.error.is_empty() {
-            my_size += ::protobuf::rt::string_size(4, &self.error);
-        }
         if self.hit_cache != false {
             my_size += 2;
+        }
+        if !self.error.is_empty() {
+            my_size += ::protobuf::rt::string_size(5, &self.error);
         }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -2486,11 +2521,11 @@ impl ::protobuf::Message for EventMessageResourceCurrent {
         if self.seek != 0 {
             os.write_int64(3, self.seek)?;
         }
-        if !self.error.is_empty() {
-            os.write_string(4, &self.error)?;
-        }
         if self.hit_cache != false {
-            os.write_bool(5, self.hit_cache)?;
+            os.write_bool(4, self.hit_cache)?;
+        }
+        if !self.error.is_empty() {
+            os.write_string(5, &self.error)?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -2545,15 +2580,15 @@ impl ::protobuf::Message for EventMessageResourceCurrent {
                 |m: &EventMessageResourceCurrent| { &m.seek },
                 |m: &mut EventMessageResourceCurrent| { &mut m.seek },
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                "error",
-                |m: &EventMessageResourceCurrent| { &m.error },
-                |m: &mut EventMessageResourceCurrent| { &mut m.error },
-            ));
             fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
                 "hit_cache",
                 |m: &EventMessageResourceCurrent| { &m.hit_cache },
                 |m: &mut EventMessageResourceCurrent| { &mut m.hit_cache },
+            ));
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                "error",
+                |m: &EventMessageResourceCurrent| { &m.error },
+                |m: &mut EventMessageResourceCurrent| { &mut m.error },
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<EventMessageResourceCurrent>(
                 "EventMessageResourceCurrent",
@@ -2574,8 +2609,8 @@ impl ::protobuf::Clear for EventMessageResourceCurrent {
         self.resource.clear();
         self.duration = 0;
         self.seek = 0;
-        self.error.clear();
         self.hit_cache = false;
+        self.error.clear();
         self.unknown_fields.clear();
     }
 }
@@ -2592,155 +2627,370 @@ impl ::protobuf::reflect::ProtobufValue for EventMessageResourceCurrent {
     }
 }
 
+#[derive(PartialEq,Clone,Default)]
+pub struct EventMessageResourceSeek {
+    // message fields
+    pub resource: ::protobuf::SingularPtrField<super::keys::MessageResource>,
+    pub error: ::std::string::String,
+    // special fields
+    pub unknown_fields: ::protobuf::UnknownFields,
+    pub cached_size: ::protobuf::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a EventMessageResourceSeek {
+    fn default() -> &'a EventMessageResourceSeek {
+        <EventMessageResourceSeek as ::protobuf::Message>::default_instance()
+    }
+}
+
+impl EventMessageResourceSeek {
+    pub fn new() -> EventMessageResourceSeek {
+        ::std::default::Default::default()
+    }
+
+    // .KPProto.MessageResource resource = 1;
+
+
+    pub fn get_resource(&self) -> &super::keys::MessageResource {
+        self.resource.as_ref().unwrap_or_else(|| <super::keys::MessageResource as ::protobuf::Message>::default_instance())
+    }
+    pub fn clear_resource(&mut self) {
+        self.resource.clear();
+    }
+
+    pub fn has_resource(&self) -> bool {
+        self.resource.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_resource(&mut self, v: super::keys::MessageResource) {
+        self.resource = ::protobuf::SingularPtrField::some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_resource(&mut self) -> &mut super::keys::MessageResource {
+        if self.resource.is_none() {
+            self.resource.set_default();
+        }
+        self.resource.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_resource(&mut self) -> super::keys::MessageResource {
+        self.resource.take().unwrap_or_else(|| super::keys::MessageResource::new())
+    }
+
+    // string error = 2;
+
+
+    pub fn get_error(&self) -> &str {
+        &self.error
+    }
+    pub fn clear_error(&mut self) {
+        self.error.clear();
+    }
+
+    // Param is passed by value, moved
+    pub fn set_error(&mut self, v: ::std::string::String) {
+        self.error = v;
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_error(&mut self) -> &mut ::std::string::String {
+        &mut self.error
+    }
+
+    // Take field
+    pub fn take_error(&mut self) -> ::std::string::String {
+        ::std::mem::replace(&mut self.error, ::std::string::String::new())
+    }
+}
+
+impl ::protobuf::Message for EventMessageResourceSeek {
+    fn is_initialized(&self) -> bool {
+        for v in &self.resource {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.resource)?;
+                },
+                2 => {
+                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.error)?;
+                },
+                _ => {
+                    ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(ref v) = self.resource.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        }
+        if !self.error.is_empty() {
+            my_size += ::protobuf::rt::string_size(2, &self.error);
+        }
+        my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+        if let Some(ref v) = self.resource.as_ref() {
+            os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_raw_varint32(v.get_cached_size())?;
+            v.write_to_with_cached_sizes(os)?;
+        }
+        if !self.error.is_empty() {
+            os.write_string(2, &self.error)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &::protobuf::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn as_any(&self) -> &dyn (::std::any::Any) {
+        self as &dyn (::std::any::Any)
+    }
+    fn as_any_mut(&mut self) -> &mut dyn (::std::any::Any) {
+        self as &mut dyn (::std::any::Any)
+    }
+    fn into_any(self: ::std::boxed::Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
+        self
+    }
+
+    fn descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor {
+        Self::descriptor_static()
+    }
+
+    fn new() -> EventMessageResourceSeek {
+        EventMessageResourceSeek::new()
+    }
+
+    fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<super::keys::MessageResource>>(
+                "resource",
+                |m: &EventMessageResourceSeek| { &m.resource },
+                |m: &mut EventMessageResourceSeek| { &mut m.resource },
+            ));
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                "error",
+                |m: &EventMessageResourceSeek| { &m.error },
+                |m: &mut EventMessageResourceSeek| { &mut m.error },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<EventMessageResourceSeek>(
+                "EventMessageResourceSeek",
+                fields,
+                file_descriptor_proto()
+            )
+        })
+    }
+
+    fn default_instance() -> &'static EventMessageResourceSeek {
+        static instance: ::protobuf::rt::LazyV2<EventMessageResourceSeek> = ::protobuf::rt::LazyV2::INIT;
+        instance.get(EventMessageResourceSeek::new)
+    }
+}
+
+impl ::protobuf::Clear for EventMessageResourceSeek {
+    fn clear(&mut self) {
+        self.resource.clear();
+        self.error.clear();
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for EventMessageResourceSeek {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        ::protobuf::text_format::fmt(self, f)
+    }
+}
+
+impl ::protobuf::reflect::ProtobufValue for EventMessageResourceSeek {
+    fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
+        ::protobuf::reflect::ReflectValueRef::Message(self)
+    }
+}
+
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\x1cproto/msg/msg_resource.proto\x12\x0bKPProto.Msg\x1a\x10proto/keys.\
-    proto\x1a\x14gogoproto/gogo.proto\"m\n\x19EventMessageResourceStart\x12:\
+    proto\"g\n\x19EventMessageResourceStart\x124\n\x08resource\x18\x01\x20\
+    \x01(\x0b2\x18.KPProto.MessageResourceR\x08resource\x12\x14\n\x05error\
+    \x18\x02\x20\x01(\tR\x05error\"\xbb\x02\n\x1bEventMessageResourceChecked\
+    \x124\n\x08resource\x18\x01\x20\x01(\x0b2\x18.KPProto.MessageResourceR\
+    \x08resource\x12X\n\x0finput_attribute\x18\x02\x20\x01(\x0b2/.KPProto.Ms\
+    g.EventMessageResourceInputAttributeR\x0einputAttribute\x12Y\n\routput_o\
+    ption\x18\x03\x20\x01(\x0b24.KPProto.Msg.EventMessageResourceCheckedOutp\
+    utOptionR\x0coutputOption\x12\x14\n\x05error\x18\x04\x20\x01(\tR\x05erro\
+    r\x12\x1b\n\thit_cache\x18\x05\x20\x01(\x08R\x08hitCache\"\x8f\x02\n'Eve\
+    ntMessageResourceCheckedOutputOption\x12\x1f\n\x0bvideo_width\x18\x01\
+    \x20\x01(\x04R\nvideoWidth\x12!\n\x0cvideo_height\x18\x02\x20\x01(\x04R\
+    \x0bvideoHeight\x12\x1b\n\tvideo_fps\x18\x03\x20\x01(\x04R\x08videoFps\
+    \x12*\n\x11audio_sample_rate\x18\x04\x20\x01(\x04R\x0faudioSampleRate\
+    \x120\n\x14audio_channel_layout\x18\x05\x20\x01(\x04R\x12audioChannelLay\
+    out\x12%\n\x0eaudio_channels\x18\x06\x20\x01(\x04R\raudioChannels\"@\n\"\
+    EventMessageResourceInputAttribute\x12\x1a\n\x08duration\x18\x01\x20\x01\
+    (\x04R\x08duration\"h\n\x1aEventMessageResourceFinish\x124\n\x08resource\
+    \x18\x01\x20\x01(\x0b2\x18.KPProto.MessageResourceR\x08resource\x12\x14\
+    \n\x05error\x18\x02\x20\x01(\tR\x05error\"1\n\x19EventMessageResourceEmp\
+    ty\x12\x14\n\x05error\x18\x03\x20\x01(\tR\x05error\"e\n\x17EventMessageR\
+    esourceAdd\x124\n\x08resource\x18\x01\x20\x01(\x0b2\x18.KPProto.MessageR\
+    esourceR\x08resource\x12\x14\n\x05error\x18\x02\x20\x01(\tR\x05error\"h\
+    \n\x1aEventMessageResourceRemove\x124\n\x08resource\x18\x01\x20\x01(\x0b\
+    2\x18.KPProto.MessageResourceR\x08resource\x12\x14\n\x05error\x18\x02\
+    \x20\x01(\tR\x05error\"h\n\x18EventMessageResourceList\x126\n\tresources\
+    \x18\x01\x20\x03(\x0b2\x18.KPProto.MessageResourceR\tresources\x12\x14\n\
+    \x05error\x18\x02\x20\x01(\tR\x05error\"k\n\x1bEventMessageResourceHisto\
+    ry\x126\n\tresources\x18\x01\x20\x03(\x0b2\x18.KPProto.MessageResourceR\
+    \tresources\x12\x14\n\x05error\x18\x02\x20\x01(\tR\x05error\"\xb6\x01\n\
+    \x1bEventMessageResourceCurrent\x124\n\x08resource\x18\x01\x20\x01(\x0b2\
+    \x18.KPProto.MessageResourceR\x08resource\x12\x1a\n\x08duration\x18\x02\
+    \x20\x01(\x04R\x08duration\x12\x12\n\x04seek\x18\x03\x20\x01(\x03R\x04se\
+    ek\x12\x1b\n\thit_cache\x18\x04\x20\x01(\x08R\x08hitCache\x12\x14\n\x05e\
+    rror\x18\x05\x20\x01(\tR\x05error\"f\n\x18EventMessageResourceSeek\x124\
     \n\x08resource\x18\x01\x20\x01(\x0b2\x18.KPProto.MessageResourceR\x08res\
-    ourceB\x04\xc8\xde\x1f\x01\x12\x14\n\x05error\x18\x02\x20\x01(\tR\x05err\
-    or\"\xb0\x02\n\x1bEventMessageResourceChecked\x12:\n\x08resource\x18\x01\
-    \x20\x01(\x0b2\x18.KPProto.MessageResourceR\x08resourceB\x04\xc8\xde\x1f\
-    \x01\x12^\n\x0finput_attribute\x18\x02\x20\x01(\x0b2/.KPProto.Msg.EventM\
-    essageResourceInputAttributeR\x0einputAttributeB\x04\xc8\xde\x1f\x01\x12\
-    _\n\routput_option\x18\x03\x20\x01(\x0b24.KPProto.Msg.EventMessageResour\
-    ceCheckedOutputOptionR\x0coutputOptionB\x04\xc8\xde\x1f\x01\x12\x14\n\
-    \x05error\x18\x04\x20\x01(\tR\x05error\"\x8f\x02\n'EventMessageResourceC\
-    heckedOutputOption\x12\x1f\n\x0bvideo_width\x18\x01\x20\x01(\x04R\nvideo\
-    Width\x12!\n\x0cvideo_height\x18\x02\x20\x01(\x04R\x0bvideoHeight\x12\
-    \x1b\n\tvideo_fps\x18\x03\x20\x01(\x04R\x08videoFps\x12*\n\x11audio_samp\
-    le_rate\x18\x04\x20\x01(\x04R\x0faudioSampleRate\x120\n\x14audio_channel\
-    _layout\x18\x05\x20\x01(\x04R\x12audioChannelLayout\x12%\n\x0eaudio_chan\
-    nels\x18\x06\x20\x01(\x04R\raudioChannels\"@\n\"EventMessageResourceInpu\
-    tAttribute\x12\x1a\n\x08duration\x18\x01\x20\x01(\x04R\x08duration\"n\n\
-    \x1aEventMessageResourceFinish\x12:\n\x08resource\x18\x01\x20\x01(\x0b2\
-    \x18.KPProto.MessageResourceR\x08resourceB\x04\xc8\xde\x1f\x01\x12\x14\n\
-    \x05error\x18\x02\x20\x01(\tR\x05error\"1\n\x19EventMessageResourceEmpty\
-    \x12\x14\n\x05error\x18\x03\x20\x01(\tR\x05error\"k\n\x17EventMessageRes\
-    ourceAdd\x12:\n\x08resource\x18\x01\x20\x01(\x0b2\x18.KPProto.MessageRes\
-    ourceR\x08resourceB\x04\xc8\xde\x1f\x01\x12\x14\n\x05error\x18\x02\x20\
-    \x01(\tR\x05error\"n\n\x1aEventMessageResourceRemove\x12:\n\x08resource\
-    \x18\x01\x20\x01(\x0b2\x18.KPProto.MessageResourceR\x08resourceB\x04\xc8\
-    \xde\x1f\x01\x12\x14\n\x05error\x18\x02\x20\x01(\tR\x05error\"n\n\x18Eve\
-    ntMessageResourceList\x12<\n\tresources\x18\x01\x20\x03(\x0b2\x18.KPProt\
-    o.MessageResourceR\tresourcesB\x04\xc8\xde\x1f\x01\x12\x14\n\x05error\
-    \x18\x02\x20\x01(\tR\x05error\"k\n\x1bEventMessageResourceHistory\x126\n\
-    \tresources\x18\x01\x20\x03(\x0b2\x18.KPProto.MessageResourceR\tresource\
-    s\x12\x14\n\x05error\x18\x02\x20\x01(\tR\x05error\"\xb6\x01\n\x1bEventMe\
-    ssageResourceCurrent\x124\n\x08resource\x18\x01\x20\x01(\x0b2\x18.KPProt\
-    o.MessageResourceR\x08resource\x12\x1a\n\x08duration\x18\x02\x20\x01(\
-    \x04R\x08duration\x12\x12\n\x04seek\x18\x03\x20\x01(\x03R\x04seek\x12\
-    \x14\n\x05error\x18\x04\x20\x01(\tR\x05error\x12\x1b\n\thit_cache\x18\
-    \x05\x20\x01(\x08R\x08hitCacheB2Z0github.com/bytelang/kplayer/types/core\
-    /proto/msgJ\xdd\x13\n\x06\x12\x04\0\0L\x01\n\x08\n\x01\x0c\x12\x03\0\0\
-    \x12\n\x08\n\x01\x02\x12\x03\x02\0\x14\n\x08\n\x01\x08\x12\x03\x04\0G\n\
-    \t\n\x02\x08\x0b\x12\x03\x04\0G\n\t\n\x02\x03\0\x12\x03\x06\0\x1a\n\t\n\
-    \x02\x03\x01\x12\x03\x07\0\x1e\n,\n\x02\x04\0\x12\x04\n\0\r\x01\x1a\x20\
-    \x20message\x20resource\x20start\x20playing\n\n\n\n\x03\x04\0\x01\x12\
-    \x03\n\x08!\n\x0b\n\x04\x04\0\x02\0\x12\x03\x0b\x08C\n\x0c\n\x05\x04\0\
-    \x02\0\x06\x12\x03\x0b\x08\x17\n\x0c\n\x05\x04\0\x02\0\x01\x12\x03\x0b\
-    \x18\x20\n\x0c\n\x05\x04\0\x02\0\x03\x12\x03\x0b#$\n\x0c\n\x05\x04\0\x02\
-    \0\x08\x12\x03\x0b%B\n\x0f\n\x08\x04\0\x02\0\x08\xe9\xfb\x03\x12\x03\x0b\
-    &A\n\x0b\n\x04\x04\0\x02\x01\x12\x03\x0c\x08\x19\n\x0c\n\x05\x04\0\x02\
-    \x01\x05\x12\x03\x0c\x08\x0e\n\x0c\n\x05\x04\0\x02\x01\x01\x12\x03\x0c\
-    \x0f\x14\n\x0c\n\x05\x04\0\x02\x01\x03\x12\x03\x0c\x17\x18\n&\n\x02\x04\
-    \x01\x12\x04\x10\0\x15\x01\x1a\x1a\x20message\x20resource\x20checked\n\n\
-    \n\n\x03\x04\x01\x01\x12\x03\x10\x08#\n\x0b\n\x04\x04\x01\x02\0\x12\x03\
-    \x11\x08C\n\x0c\n\x05\x04\x01\x02\0\x06\x12\x03\x11\x08\x17\n\x0c\n\x05\
-    \x04\x01\x02\0\x01\x12\x03\x11\x18\x20\n\x0c\n\x05\x04\x01\x02\0\x03\x12\
-    \x03\x11#$\n\x0c\n\x05\x04\x01\x02\0\x08\x12\x03\x11%B\n\x0f\n\x08\x04\
-    \x01\x02\0\x08\xe9\xfb\x03\x12\x03\x11&A\n\x0b\n\x04\x04\x01\x02\x01\x12\
-    \x03\x12\x08\\\n\x0c\n\x05\x04\x01\x02\x01\x06\x12\x03\x12\x08*\n\x0c\n\
-    \x05\x04\x01\x02\x01\x01\x12\x03\x12+:\n\x0c\n\x05\x04\x01\x02\x01\x03\
-    \x12\x03\x12<=\n\x0c\n\x05\x04\x01\x02\x01\x08\x12\x03\x12>[\n\x0f\n\x08\
-    \x04\x01\x02\x01\x08\xe9\xfb\x03\x12\x03\x12?Z\n\x0b\n\x04\x04\x01\x02\
-    \x02\x12\x03\x13\x08`\n\x0c\n\x05\x04\x01\x02\x02\x06\x12\x03\x13\x08/\n\
-    \x0c\n\x05\x04\x01\x02\x02\x01\x12\x03\x130=\n\x0c\n\x05\x04\x01\x02\x02\
-    \x03\x12\x03\x13@A\n\x0c\n\x05\x04\x01\x02\x02\x08\x12\x03\x13B_\n\x0f\n\
-    \x08\x04\x01\x02\x02\x08\xe9\xfb\x03\x12\x03\x13C^\n\x0b\n\x04\x04\x01\
-    \x02\x03\x12\x03\x14\x08\x19\n\x0c\n\x05\x04\x01\x02\x03\x05\x12\x03\x14\
-    \x08\x0e\n\x0c\n\x05\x04\x01\x02\x03\x01\x12\x03\x14\x0f\x14\n\x0c\n\x05\
-    \x04\x01\x02\x03\x03\x12\x03\x14\x17\x18\n\n\n\x02\x04\x02\x12\x04\x16\0\
-    \x1d\x01\n\n\n\x03\x04\x02\x01\x12\x03\x16\x08/\n\x0b\n\x04\x04\x02\x02\
-    \0\x12\x03\x17\x04\x1b\n\x0c\n\x05\x04\x02\x02\0\x05\x12\x03\x17\x04\n\n\
-    \x0c\n\x05\x04\x02\x02\0\x01\x12\x03\x17\x0b\x16\n\x0c\n\x05\x04\x02\x02\
-    \0\x03\x12\x03\x17\x19\x1a\n\x0b\n\x04\x04\x02\x02\x01\x12\x03\x18\x04\
-    \x1c\n\x0c\n\x05\x04\x02\x02\x01\x05\x12\x03\x18\x04\n\n\x0c\n\x05\x04\
-    \x02\x02\x01\x01\x12\x03\x18\x0b\x17\n\x0c\n\x05\x04\x02\x02\x01\x03\x12\
-    \x03\x18\x1a\x1b\n\x0b\n\x04\x04\x02\x02\x02\x12\x03\x19\x04\x19\n\x0c\n\
-    \x05\x04\x02\x02\x02\x05\x12\x03\x19\x04\n\n\x0c\n\x05\x04\x02\x02\x02\
-    \x01\x12\x03\x19\x0b\x14\n\x0c\n\x05\x04\x02\x02\x02\x03\x12\x03\x19\x17\
-    \x18\n\x0b\n\x04\x04\x02\x02\x03\x12\x03\x1a\x04!\n\x0c\n\x05\x04\x02\
-    \x02\x03\x05\x12\x03\x1a\x04\n\n\x0c\n\x05\x04\x02\x02\x03\x01\x12\x03\
-    \x1a\x0b\x1c\n\x0c\n\x05\x04\x02\x02\x03\x03\x12\x03\x1a\x1f\x20\n\x0b\n\
-    \x04\x04\x02\x02\x04\x12\x03\x1b\x04$\n\x0c\n\x05\x04\x02\x02\x04\x05\
-    \x12\x03\x1b\x04\n\n\x0c\n\x05\x04\x02\x02\x04\x01\x12\x03\x1b\x0b\x1f\n\
-    \x0c\n\x05\x04\x02\x02\x04\x03\x12\x03\x1b\"#\n\x0b\n\x04\x04\x02\x02\
-    \x05\x12\x03\x1c\x04\x1e\n\x0c\n\x05\x04\x02\x02\x05\x05\x12\x03\x1c\x04\
-    \n\n\x0c\n\x05\x04\x02\x02\x05\x01\x12\x03\x1c\x0b\x19\n\x0c\n\x05\x04\
-    \x02\x02\x05\x03\x12\x03\x1c\x1c\x1d\n\n\n\x02\x04\x03\x12\x04\x1e\0\x20\
-    \x01\n\n\n\x03\x04\x03\x01\x12\x03\x1e\x08*\n\x0b\n\x04\x04\x03\x02\0\
-    \x12\x03\x1f\x08\x1c\n\x0c\n\x05\x04\x03\x02\0\x05\x12\x03\x1f\x08\x0e\n\
-    \x0c\n\x05\x04\x03\x02\0\x01\x12\x03\x1f\x0f\x17\n\x0c\n\x05\x04\x03\x02\
-    \0\x03\x12\x03\x1f\x1a\x1b\n,\n\x02\x04\x04\x12\x04#\0&\x01\x1a\x20\x20m\
-    essage\x20resource\x20play\x20finished\n\n\n\n\x03\x04\x04\x01\x12\x03#\
-    \x08\"\n\x0b\n\x04\x04\x04\x02\0\x12\x03$\x08C\n\x0c\n\x05\x04\x04\x02\0\
-    \x06\x12\x03$\x08\x17\n\x0c\n\x05\x04\x04\x02\0\x01\x12\x03$\x18\x20\n\
-    \x0c\n\x05\x04\x04\x02\0\x03\x12\x03$#$\n\x0c\n\x05\x04\x04\x02\0\x08\
-    \x12\x03$%B\n\x0f\n\x08\x04\x04\x02\0\x08\xe9\xfb\x03\x12\x03$&A\n\x0b\n\
-    \x04\x04\x04\x02\x01\x12\x03%\x08\x19\n\x0c\n\x05\x04\x04\x02\x01\x05\
-    \x12\x03%\x08\x0e\n\x0c\n\x05\x04\x04\x02\x01\x01\x12\x03%\x0f\x14\n\x0c\
-    \n\x05\x04\x04\x02\x01\x03\x12\x03%\x17\x18\n:\n\x02\x04\x05\x12\x04)\0+\
-    \x01\x1a.\x20message\x20resource\x20empty\x20wait\x20for\x20new\x20resou\
-    rce\n\n\n\n\x03\x04\x05\x01\x12\x03)\x08!\n\x0b\n\x04\x04\x05\x02\0\x12\
-    \x03*\x08\x19\n\x0c\n\x05\x04\x05\x02\0\x05\x12\x03*\x08\x0e\n\x0c\n\x05\
-    \x04\x05\x02\0\x01\x12\x03*\x0f\x14\n\x0c\n\x05\x04\x05\x02\0\x03\x12\
-    \x03*\x17\x18\n.\n\x02\x04\x06\x12\x04.\01\x01\x1a\"\x20message\x20resou\
-    rce\x20had\x20success\x20add\n\n\n\n\x03\x04\x06\x01\x12\x03.\x08\x1f\n\
-    \x0b\n\x04\x04\x06\x02\0\x12\x03/\x08C\n\x0c\n\x05\x04\x06\x02\0\x06\x12\
-    \x03/\x08\x17\n\x0c\n\x05\x04\x06\x02\0\x01\x12\x03/\x18\x20\n\x0c\n\x05\
-    \x04\x06\x02\0\x03\x12\x03/#$\n\x0c\n\x05\x04\x06\x02\0\x08\x12\x03/%B\n\
-    \x0f\n\x08\x04\x06\x02\0\x08\xe9\xfb\x03\x12\x03/&A\n\x0b\n\x04\x04\x06\
-    \x02\x01\x12\x030\x08\x19\n\x0c\n\x05\x04\x06\x02\x01\x05\x12\x030\x08\
-    \x0e\n\x0c\n\x05\x04\x06\x02\x01\x01\x12\x030\x0f\x14\n\x0c\n\x05\x04\
-    \x06\x02\x01\x03\x12\x030\x17\x18\n1\n\x02\x04\x07\x12\x044\07\x01\x1a%\
-    \x20message\x20resource\x20had\x20success\x20remove\n\n\n\n\x03\x04\x07\
-    \x01\x12\x034\x08\"\n\x0b\n\x04\x04\x07\x02\0\x12\x035\x08C\n\x0c\n\x05\
-    \x04\x07\x02\0\x06\x12\x035\x08\x17\n\x0c\n\x05\x04\x07\x02\0\x01\x12\
-    \x035\x18\x20\n\x0c\n\x05\x04\x07\x02\0\x03\x12\x035#$\n\x0c\n\x05\x04\
-    \x07\x02\0\x08\x12\x035%B\n\x0f\n\x08\x04\x07\x02\0\x08\xe9\xfb\x03\x12\
-    \x035&A\n\x0b\n\x04\x04\x07\x02\x01\x12\x036\x08\x19\n\x0c\n\x05\x04\x07\
-    \x02\x01\x05\x12\x036\x08\x0e\n\x0c\n\x05\x04\x07\x02\x01\x01\x12\x036\
-    \x0f\x14\n\x0c\n\x05\x04\x07\x02\x01\x03\x12\x036\x17\x18\n)\n\x02\x04\
-    \x08\x12\x04:\0=\x01\x1a\x1d\x20message\x20current\x20no\x20playlist\n\n\
-    \n\n\x03\x04\x08\x01\x12\x03:\x08\x20\n\x0b\n\x04\x04\x08\x02\0\x12\x03;\
-    \x08M\n\x0c\n\x05\x04\x08\x02\0\x04\x12\x03;\x08\x10\n\x0c\n\x05\x04\x08\
-    \x02\0\x06\x12\x03;\x11\x20\n\x0c\n\x05\x04\x08\x02\0\x01\x12\x03;!*\n\
-    \x0c\n\x05\x04\x08\x02\0\x03\x12\x03;-.\n\x0c\n\x05\x04\x08\x02\0\x08\
-    \x12\x03;/L\n\x0f\n\x08\x04\x08\x02\0\x08\xe9\xfb\x03\x12\x03;0K\n\x0b\n\
-    \x04\x04\x08\x02\x01\x12\x03<\x08\x19\n\x0c\n\x05\x04\x08\x02\x01\x05\
-    \x12\x03<\x08\x0e\n\x0c\n\x05\x04\x08\x02\x01\x01\x12\x03<\x0f\x14\n\x0c\
-    \n\x05\x04\x08\x02\x01\x03\x12\x03<\x17\x18\n+\n\x02\x04\t\x12\x04@\0C\
-    \x01\x1a\x1f\x20message\x20play\x20history\x20playlist\n\n\n\n\x03\x04\t\
-    \x01\x12\x03@\x08#\n\x0b\n\x04\x04\t\x02\0\x12\x03A\x08/\n\x0c\n\x05\x04\
-    \t\x02\0\x04\x12\x03A\x08\x10\n\x0c\n\x05\x04\t\x02\0\x06\x12\x03A\x11\
-    \x20\n\x0c\n\x05\x04\t\x02\0\x01\x12\x03A!*\n\x0c\n\x05\x04\t\x02\0\x03\
-    \x12\x03A-.\n\x0b\n\x04\x04\t\x02\x01\x12\x03B\x08\x19\n\x0c\n\x05\x04\t\
-    \x02\x01\x05\x12\x03B\x08\x0e\n\x0c\n\x05\x04\t\x02\x01\x01\x12\x03B\x0f\
-    \x14\n\x0c\n\x05\x04\t\x02\x01\x03\x12\x03B\x17\x18\n.\n\x02\x04\n\x12\
-    \x04F\0L\x01\x1a\"\x20message\x20current\x20playing\x20resource\n\n\n\n\
-    \x03\x04\n\x01\x12\x03F\x08#\n\x0b\n\x04\x04\n\x02\0\x12\x03G\x02\x1f\n\
-    \x0c\n\x05\x04\n\x02\0\x06\x12\x03G\x02\x11\n\x0c\n\x05\x04\n\x02\0\x01\
-    \x12\x03G\x12\x1a\n\x0c\n\x05\x04\n\x02\0\x03\x12\x03G\x1d\x1e\n\x0b\n\
-    \x04\x04\n\x02\x01\x12\x03H\x02\x16\n\x0c\n\x05\x04\n\x02\x01\x05\x12\
-    \x03H\x02\x08\n\x0c\n\x05\x04\n\x02\x01\x01\x12\x03H\t\x11\n\x0c\n\x05\
-    \x04\n\x02\x01\x03\x12\x03H\x14\x15\n\x0b\n\x04\x04\n\x02\x02\x12\x03I\
-    \x02\x11\n\x0c\n\x05\x04\n\x02\x02\x05\x12\x03I\x02\x07\n\x0c\n\x05\x04\
-    \n\x02\x02\x01\x12\x03I\x08\x0c\n\x0c\n\x05\x04\n\x02\x02\x03\x12\x03I\
-    \x0f\x10\n\x0b\n\x04\x04\n\x02\x03\x12\x03J\x02\x13\n\x0c\n\x05\x04\n\
-    \x02\x03\x05\x12\x03J\x02\x08\n\x0c\n\x05\x04\n\x02\x03\x01\x12\x03J\t\
-    \x0e\n\x0c\n\x05\x04\n\x02\x03\x03\x12\x03J\x11\x12\n\x0b\n\x04\x04\n\
-    \x02\x04\x12\x03K\x02\x15\n\x0c\n\x05\x04\n\x02\x04\x05\x12\x03K\x02\x06\
-    \n\x0c\n\x05\x04\n\x02\x04\x01\x12\x03K\x07\x10\n\x0c\n\x05\x04\n\x02\
-    \x04\x03\x12\x03K\x13\x14b\x06proto3\
+    ource\x12\x14\n\x05error\x18\x02\x20\x01(\tR\x05errorB2Z0github.com/byte\
+    lang/kplayer/types/core/proto/msgJ\xb0\x13\n\x06\x12\x04\0\0R\x01\n\x08\
+    \n\x01\x0c\x12\x03\0\0\x12\n\x08\n\x01\x02\x12\x03\x02\0\x14\n\x08\n\x01\
+    \x08\x12\x03\x04\0G\n\t\n\x02\x08\x0b\x12\x03\x04\0G\n\t\n\x02\x03\0\x12\
+    \x03\x06\0\x1a\n,\n\x02\x04\0\x12\x04\t\0\x0c\x01\x1a\x20\x20message\x20\
+    resource\x20start\x20playing\n\n\n\n\x03\x04\0\x01\x12\x03\t\x08!\n\x0b\
+    \n\x04\x04\0\x02\0\x12\x03\n\x02\x1f\n\x0c\n\x05\x04\0\x02\0\x06\x12\x03\
+    \n\x02\x11\n\x0c\n\x05\x04\0\x02\0\x01\x12\x03\n\x12\x1a\n\x0c\n\x05\x04\
+    \0\x02\0\x03\x12\x03\n\x1d\x1e\n\x0b\n\x04\x04\0\x02\x01\x12\x03\x0b\x02\
+    \x13\n\x0c\n\x05\x04\0\x02\x01\x05\x12\x03\x0b\x02\x08\n\x0c\n\x05\x04\0\
+    \x02\x01\x01\x12\x03\x0b\t\x0e\n\x0c\n\x05\x04\0\x02\x01\x03\x12\x03\x0b\
+    \x11\x12\n&\n\x02\x04\x01\x12\x04\x0f\0\x15\x01\x1a\x1a\x20message\x20re\
+    source\x20checked\n\n\n\n\x03\x04\x01\x01\x12\x03\x0f\x08#\n\x0b\n\x04\
+    \x04\x01\x02\0\x12\x03\x10\x02\x1f\n\x0c\n\x05\x04\x01\x02\0\x06\x12\x03\
+    \x10\x02\x11\n\x0c\n\x05\x04\x01\x02\0\x01\x12\x03\x10\x12\x1a\n\x0c\n\
+    \x05\x04\x01\x02\0\x03\x12\x03\x10\x1d\x1e\n\x0b\n\x04\x04\x01\x02\x01\
+    \x12\x03\x11\x029\n\x0c\n\x05\x04\x01\x02\x01\x06\x12\x03\x11\x02$\n\x0c\
+    \n\x05\x04\x01\x02\x01\x01\x12\x03\x11%4\n\x0c\n\x05\x04\x01\x02\x01\x03\
+    \x12\x03\x1178\n\x0b\n\x04\x04\x01\x02\x02\x12\x03\x12\x02<\n\x0c\n\x05\
+    \x04\x01\x02\x02\x06\x12\x03\x12\x02)\n\x0c\n\x05\x04\x01\x02\x02\x01\
+    \x12\x03\x12*7\n\x0c\n\x05\x04\x01\x02\x02\x03\x12\x03\x12:;\n\x0b\n\x04\
+    \x04\x01\x02\x03\x12\x03\x13\x02\x13\n\x0c\n\x05\x04\x01\x02\x03\x05\x12\
+    \x03\x13\x02\x08\n\x0c\n\x05\x04\x01\x02\x03\x01\x12\x03\x13\t\x0e\n\x0c\
+    \n\x05\x04\x01\x02\x03\x03\x12\x03\x13\x11\x12\n\x0b\n\x04\x04\x01\x02\
+    \x04\x12\x03\x14\x02\x15\n\x0c\n\x05\x04\x01\x02\x04\x05\x12\x03\x14\x02\
+    \x06\n\x0c\n\x05\x04\x01\x02\x04\x01\x12\x03\x14\x07\x10\n\x0c\n\x05\x04\
+    \x01\x02\x04\x03\x12\x03\x14\x13\x14\n\n\n\x02\x04\x02\x12\x04\x16\0\x1d\
+    \x01\n\n\n\x03\x04\x02\x01\x12\x03\x16\x08/\n\x0b\n\x04\x04\x02\x02\0\
+    \x12\x03\x17\x02\x19\n\x0c\n\x05\x04\x02\x02\0\x05\x12\x03\x17\x02\x08\n\
+    \x0c\n\x05\x04\x02\x02\0\x01\x12\x03\x17\t\x14\n\x0c\n\x05\x04\x02\x02\0\
+    \x03\x12\x03\x17\x17\x18\n\x0b\n\x04\x04\x02\x02\x01\x12\x03\x18\x02\x1a\
+    \n\x0c\n\x05\x04\x02\x02\x01\x05\x12\x03\x18\x02\x08\n\x0c\n\x05\x04\x02\
+    \x02\x01\x01\x12\x03\x18\t\x15\n\x0c\n\x05\x04\x02\x02\x01\x03\x12\x03\
+    \x18\x18\x19\n\x0b\n\x04\x04\x02\x02\x02\x12\x03\x19\x02\x17\n\x0c\n\x05\
+    \x04\x02\x02\x02\x05\x12\x03\x19\x02\x08\n\x0c\n\x05\x04\x02\x02\x02\x01\
+    \x12\x03\x19\t\x12\n\x0c\n\x05\x04\x02\x02\x02\x03\x12\x03\x19\x15\x16\n\
+    \x0b\n\x04\x04\x02\x02\x03\x12\x03\x1a\x02\x1f\n\x0c\n\x05\x04\x02\x02\
+    \x03\x05\x12\x03\x1a\x02\x08\n\x0c\n\x05\x04\x02\x02\x03\x01\x12\x03\x1a\
+    \t\x1a\n\x0c\n\x05\x04\x02\x02\x03\x03\x12\x03\x1a\x1d\x1e\n\x0b\n\x04\
+    \x04\x02\x02\x04\x12\x03\x1b\x02\"\n\x0c\n\x05\x04\x02\x02\x04\x05\x12\
+    \x03\x1b\x02\x08\n\x0c\n\x05\x04\x02\x02\x04\x01\x12\x03\x1b\t\x1d\n\x0c\
+    \n\x05\x04\x02\x02\x04\x03\x12\x03\x1b\x20!\n\x0b\n\x04\x04\x02\x02\x05\
+    \x12\x03\x1c\x02\x1c\n\x0c\n\x05\x04\x02\x02\x05\x05\x12\x03\x1c\x02\x08\
+    \n\x0c\n\x05\x04\x02\x02\x05\x01\x12\x03\x1c\t\x17\n\x0c\n\x05\x04\x02\
+    \x02\x05\x03\x12\x03\x1c\x1a\x1b\n\n\n\x02\x04\x03\x12\x04\x1e\0\x20\x01\
+    \n\n\n\x03\x04\x03\x01\x12\x03\x1e\x08*\n\x0b\n\x04\x04\x03\x02\0\x12\
+    \x03\x1f\x02\x16\n\x0c\n\x05\x04\x03\x02\0\x05\x12\x03\x1f\x02\x08\n\x0c\
+    \n\x05\x04\x03\x02\0\x01\x12\x03\x1f\t\x11\n\x0c\n\x05\x04\x03\x02\0\x03\
+    \x12\x03\x1f\x14\x15\n,\n\x02\x04\x04\x12\x04#\0&\x01\x1a\x20\x20message\
+    \x20resource\x20play\x20finished\n\n\n\n\x03\x04\x04\x01\x12\x03#\x08\"\
+    \n\x0b\n\x04\x04\x04\x02\0\x12\x03$\x02\x1f\n\x0c\n\x05\x04\x04\x02\0\
+    \x06\x12\x03$\x02\x11\n\x0c\n\x05\x04\x04\x02\0\x01\x12\x03$\x12\x1a\n\
+    \x0c\n\x05\x04\x04\x02\0\x03\x12\x03$\x1d\x1e\n\x0b\n\x04\x04\x04\x02\
+    \x01\x12\x03%\x02\x13\n\x0c\n\x05\x04\x04\x02\x01\x05\x12\x03%\x02\x08\n\
+    \x0c\n\x05\x04\x04\x02\x01\x01\x12\x03%\t\x0e\n\x0c\n\x05\x04\x04\x02\
+    \x01\x03\x12\x03%\x11\x12\n:\n\x02\x04\x05\x12\x04)\0+\x01\x1a.\x20messa\
+    ge\x20resource\x20empty\x20wait\x20for\x20new\x20resource\n\n\n\n\x03\
+    \x04\x05\x01\x12\x03)\x08!\n\x0b\n\x04\x04\x05\x02\0\x12\x03*\x02\x13\n\
+    \x0c\n\x05\x04\x05\x02\0\x05\x12\x03*\x02\x08\n\x0c\n\x05\x04\x05\x02\0\
+    \x01\x12\x03*\t\x0e\n\x0c\n\x05\x04\x05\x02\0\x03\x12\x03*\x11\x12\n.\n\
+    \x02\x04\x06\x12\x04.\01\x01\x1a\"\x20message\x20resource\x20had\x20succ\
+    ess\x20add\n\n\n\n\x03\x04\x06\x01\x12\x03.\x08\x1f\n\x0b\n\x04\x04\x06\
+    \x02\0\x12\x03/\x02\x1f\n\x0c\n\x05\x04\x06\x02\0\x06\x12\x03/\x02\x11\n\
+    \x0c\n\x05\x04\x06\x02\0\x01\x12\x03/\x12\x1a\n\x0c\n\x05\x04\x06\x02\0\
+    \x03\x12\x03/\x1d\x1e\n\x0b\n\x04\x04\x06\x02\x01\x12\x030\x02\x13\n\x0c\
+    \n\x05\x04\x06\x02\x01\x05\x12\x030\x02\x08\n\x0c\n\x05\x04\x06\x02\x01\
+    \x01\x12\x030\t\x0e\n\x0c\n\x05\x04\x06\x02\x01\x03\x12\x030\x11\x12\n1\
+    \n\x02\x04\x07\x12\x044\07\x01\x1a%\x20message\x20resource\x20had\x20suc\
+    cess\x20remove\n\n\n\n\x03\x04\x07\x01\x12\x034\x08\"\n\x0b\n\x04\x04\
+    \x07\x02\0\x12\x035\x02\x1f\n\x0c\n\x05\x04\x07\x02\0\x06\x12\x035\x02\
+    \x11\n\x0c\n\x05\x04\x07\x02\0\x01\x12\x035\x12\x1a\n\x0c\n\x05\x04\x07\
+    \x02\0\x03\x12\x035\x1d\x1e\n\x0b\n\x04\x04\x07\x02\x01\x12\x036\x02\x13\
+    \n\x0c\n\x05\x04\x07\x02\x01\x05\x12\x036\x02\x08\n\x0c\n\x05\x04\x07\
+    \x02\x01\x01\x12\x036\t\x0e\n\x0c\n\x05\x04\x07\x02\x01\x03\x12\x036\x11\
+    \x12\n)\n\x02\x04\x08\x12\x04:\0=\x01\x1a\x1d\x20message\x20current\x20n\
+    o\x20playlist\n\n\n\n\x03\x04\x08\x01\x12\x03:\x08\x20\n\x0b\n\x04\x04\
+    \x08\x02\0\x12\x03;\x02)\n\x0c\n\x05\x04\x08\x02\0\x04\x12\x03;\x02\n\n\
+    \x0c\n\x05\x04\x08\x02\0\x06\x12\x03;\x0b\x1a\n\x0c\n\x05\x04\x08\x02\0\
+    \x01\x12\x03;\x1b$\n\x0c\n\x05\x04\x08\x02\0\x03\x12\x03;'(\n\x0b\n\x04\
+    \x04\x08\x02\x01\x12\x03<\x02\x13\n\x0c\n\x05\x04\x08\x02\x01\x05\x12\
+    \x03<\x02\x08\n\x0c\n\x05\x04\x08\x02\x01\x01\x12\x03<\t\x0e\n\x0c\n\x05\
+    \x04\x08\x02\x01\x03\x12\x03<\x11\x12\n+\n\x02\x04\t\x12\x04@\0C\x01\x1a\
+    \x1f\x20message\x20play\x20history\x20playlist\n\n\n\n\x03\x04\t\x01\x12\
+    \x03@\x08#\n\x0b\n\x04\x04\t\x02\0\x12\x03A\x02)\n\x0c\n\x05\x04\t\x02\0\
+    \x04\x12\x03A\x02\n\n\x0c\n\x05\x04\t\x02\0\x06\x12\x03A\x0b\x1a\n\x0c\n\
+    \x05\x04\t\x02\0\x01\x12\x03A\x1b$\n\x0c\n\x05\x04\t\x02\0\x03\x12\x03A'\
+    (\n\x0b\n\x04\x04\t\x02\x01\x12\x03B\x02\x13\n\x0c\n\x05\x04\t\x02\x01\
+    \x05\x12\x03B\x02\x08\n\x0c\n\x05\x04\t\x02\x01\x01\x12\x03B\t\x0e\n\x0c\
+    \n\x05\x04\t\x02\x01\x03\x12\x03B\x11\x12\n.\n\x02\x04\n\x12\x04F\0L\x01\
+    \x1a\"\x20message\x20current\x20playing\x20resource\n\n\n\n\x03\x04\n\
+    \x01\x12\x03F\x08#\n\x0b\n\x04\x04\n\x02\0\x12\x03G\x02\x1f\n\x0c\n\x05\
+    \x04\n\x02\0\x06\x12\x03G\x02\x11\n\x0c\n\x05\x04\n\x02\0\x01\x12\x03G\
+    \x12\x1a\n\x0c\n\x05\x04\n\x02\0\x03\x12\x03G\x1d\x1e\n\x0b\n\x04\x04\n\
+    \x02\x01\x12\x03H\x02\x16\n\x0c\n\x05\x04\n\x02\x01\x05\x12\x03H\x02\x08\
+    \n\x0c\n\x05\x04\n\x02\x01\x01\x12\x03H\t\x11\n\x0c\n\x05\x04\n\x02\x01\
+    \x03\x12\x03H\x14\x15\n\x0b\n\x04\x04\n\x02\x02\x12\x03I\x02\x11\n\x0c\n\
+    \x05\x04\n\x02\x02\x05\x12\x03I\x02\x07\n\x0c\n\x05\x04\n\x02\x02\x01\
+    \x12\x03I\x08\x0c\n\x0c\n\x05\x04\n\x02\x02\x03\x12\x03I\x0f\x10\n\x0b\n\
+    \x04\x04\n\x02\x03\x12\x03J\x02\x15\n\x0c\n\x05\x04\n\x02\x03\x05\x12\
+    \x03J\x02\x06\n\x0c\n\x05\x04\n\x02\x03\x01\x12\x03J\x07\x10\n\x0c\n\x05\
+    \x04\n\x02\x03\x03\x12\x03J\x13\x14\n\x0b\n\x04\x04\n\x02\x04\x12\x03K\
+    \x02\x13\n\x0c\n\x05\x04\n\x02\x04\x05\x12\x03K\x02\x08\n\x0c\n\x05\x04\
+    \n\x02\x04\x01\x12\x03K\t\x0e\n\x0c\n\x05\x04\n\x02\x04\x03\x12\x03K\x11\
+    \x12\n#\n\x02\x04\x0b\x12\x04O\0R\x01\x1a\x17\x20message\x20resource\x20\
+    seek\n\n\n\n\x03\x04\x0b\x01\x12\x03O\x08\x20\n\x0b\n\x04\x04\x0b\x02\0\
+    \x12\x03P\x02\x1f\n\x0c\n\x05\x04\x0b\x02\0\x06\x12\x03P\x02\x11\n\x0c\n\
+    \x05\x04\x0b\x02\0\x01\x12\x03P\x12\x1a\n\x0c\n\x05\x04\x0b\x02\0\x03\
+    \x12\x03P\x1d\x1e\n\x0b\n\x04\x04\x0b\x02\x01\x12\x03Q\x02\x13\n\x0c\n\
+    \x05\x04\x0b\x02\x01\x05\x12\x03Q\x02\x08\n\x0c\n\x05\x04\x0b\x02\x01\
+    \x01\x12\x03Q\t\x0e\n\x0c\n\x05\x04\x0b\x02\x01\x03\x12\x03Q\x11\x12b\
+    \x06proto3\
 ";
 
 static file_descriptor_proto_lazy: ::protobuf::rt::LazyV2<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::rt::LazyV2::INIT;

@@ -28,6 +28,10 @@ pub struct MessagePlugin {
     // message fields
     pub path: ::std::string::String,
     pub unique: ::std::string::String,
+    pub name: ::std::string::String,
+    pub author: ::std::string::String,
+    pub media_type: i32,
+    pub sub_count: i32,
     pub params: ::std::collections::HashMap<::std::string::String, ::std::string::String>,
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -97,7 +101,89 @@ impl MessagePlugin {
         ::std::mem::replace(&mut self.unique, ::std::string::String::new())
     }
 
-    // repeated .KPProto.Msg.MessagePlugin.ParamsEntry params = 4;
+    // string name = 3;
+
+
+    pub fn get_name(&self) -> &str {
+        &self.name
+    }
+    pub fn clear_name(&mut self) {
+        self.name.clear();
+    }
+
+    // Param is passed by value, moved
+    pub fn set_name(&mut self, v: ::std::string::String) {
+        self.name = v;
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_name(&mut self) -> &mut ::std::string::String {
+        &mut self.name
+    }
+
+    // Take field
+    pub fn take_name(&mut self) -> ::std::string::String {
+        ::std::mem::replace(&mut self.name, ::std::string::String::new())
+    }
+
+    // string author = 4;
+
+
+    pub fn get_author(&self) -> &str {
+        &self.author
+    }
+    pub fn clear_author(&mut self) {
+        self.author.clear();
+    }
+
+    // Param is passed by value, moved
+    pub fn set_author(&mut self, v: ::std::string::String) {
+        self.author = v;
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_author(&mut self) -> &mut ::std::string::String {
+        &mut self.author
+    }
+
+    // Take field
+    pub fn take_author(&mut self) -> ::std::string::String {
+        ::std::mem::replace(&mut self.author, ::std::string::String::new())
+    }
+
+    // int32 media_type = 5;
+
+
+    pub fn get_media_type(&self) -> i32 {
+        self.media_type
+    }
+    pub fn clear_media_type(&mut self) {
+        self.media_type = 0;
+    }
+
+    // Param is passed by value, moved
+    pub fn set_media_type(&mut self, v: i32) {
+        self.media_type = v;
+    }
+
+    // int32 sub_count = 6;
+
+
+    pub fn get_sub_count(&self) -> i32 {
+        self.sub_count
+    }
+    pub fn clear_sub_count(&mut self) {
+        self.sub_count = 0;
+    }
+
+    // Param is passed by value, moved
+    pub fn set_sub_count(&mut self, v: i32) {
+        self.sub_count = v;
+    }
+
+    // repeated .KPProto.Msg.MessagePlugin.ParamsEntry params = 7;
 
 
     pub fn get_params(&self) -> &::std::collections::HashMap<::std::string::String, ::std::string::String> {
@@ -138,7 +224,27 @@ impl ::protobuf::Message for MessagePlugin {
                 2 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.unique)?;
                 },
+                3 => {
+                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
+                },
                 4 => {
+                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.author)?;
+                },
+                5 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    let tmp = is.read_int32()?;
+                    self.media_type = tmp;
+                },
+                6 => {
+                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
+                    }
+                    let tmp = is.read_int32()?;
+                    self.sub_count = tmp;
+                },
+                7 => {
                     ::protobuf::rt::read_map_into::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(wire_type, is, &mut self.params)?;
                 },
                 _ => {
@@ -159,7 +265,19 @@ impl ::protobuf::Message for MessagePlugin {
         if !self.unique.is_empty() {
             my_size += ::protobuf::rt::string_size(2, &self.unique);
         }
-        my_size += ::protobuf::rt::compute_map_size::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(4, &self.params);
+        if !self.name.is_empty() {
+            my_size += ::protobuf::rt::string_size(3, &self.name);
+        }
+        if !self.author.is_empty() {
+            my_size += ::protobuf::rt::string_size(4, &self.author);
+        }
+        if self.media_type != 0 {
+            my_size += ::protobuf::rt::value_size(5, self.media_type, ::protobuf::wire_format::WireTypeVarint);
+        }
+        if self.sub_count != 0 {
+            my_size += ::protobuf::rt::value_size(6, self.sub_count, ::protobuf::wire_format::WireTypeVarint);
+        }
+        my_size += ::protobuf::rt::compute_map_size::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(7, &self.params);
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -172,7 +290,19 @@ impl ::protobuf::Message for MessagePlugin {
         if !self.unique.is_empty() {
             os.write_string(2, &self.unique)?;
         }
-        ::protobuf::rt::write_map_with_cached_sizes::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(4, &self.params, os)?;
+        if !self.name.is_empty() {
+            os.write_string(3, &self.name)?;
+        }
+        if !self.author.is_empty() {
+            os.write_string(4, &self.author)?;
+        }
+        if self.media_type != 0 {
+            os.write_int32(5, self.media_type)?;
+        }
+        if self.sub_count != 0 {
+            os.write_int32(6, self.sub_count)?;
+        }
+        ::protobuf::rt::write_map_with_cached_sizes::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(7, &self.params, os)?;
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -221,6 +351,26 @@ impl ::protobuf::Message for MessagePlugin {
                 |m: &MessagePlugin| { &m.unique },
                 |m: &mut MessagePlugin| { &mut m.unique },
             ));
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                "name",
+                |m: &MessagePlugin| { &m.name },
+                |m: &mut MessagePlugin| { &mut m.name },
+            ));
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                "author",
+                |m: &MessagePlugin| { &m.author },
+                |m: &mut MessagePlugin| { &mut m.author },
+            ));
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+                "media_type",
+                |m: &MessagePlugin| { &m.media_type },
+                |m: &mut MessagePlugin| { &mut m.media_type },
+            ));
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+                "sub_count",
+                |m: &MessagePlugin| { &m.sub_count },
+                |m: &mut MessagePlugin| { &mut m.sub_count },
+            ));
             fields.push(::protobuf::reflect::accessor::make_map_accessor::<_, ::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(
                 "params",
                 |m: &MessagePlugin| { &m.params },
@@ -244,6 +394,10 @@ impl ::protobuf::Clear for MessagePlugin {
     fn clear(&mut self) {
         self.path.clear();
         self.unique.clear();
+        self.name.clear();
+        self.author.clear();
+        self.media_type = 0;
+        self.sub_count = 0;
         self.params.clear();
         self.unknown_fields.clear();
     }
@@ -1118,68 +1272,74 @@ impl ::protobuf::reflect::ProtobufValue for EventMessagePluginUpdate {
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
-    \n\x1aproto/msg/msg_plugin.proto\x12\x0bKPProto.Msg\x1a\x14gogoproto/gog\
-    o.proto\"\xb6\x01\n\rMessagePlugin\x12\x12\n\x04path\x18\x01\x20\x01(\tR\
-    \x04path\x12\x16\n\x06unique\x18\x02\x20\x01(\tR\x06unique\x12>\n\x06par\
-    ams\x18\x04\x20\x03(\x0b2&.KPProto.Msg.MessagePlugin.ParamsEntryR\x06par\
-    ams\x1a9\n\x0bParamsEntry\x12\x10\n\x03key\x18\x01\x20\x01(\tR\x03key\
-    \x12\x14\n\x05value\x18\x02\x20\x01(\tR\x05value:\x028\x01\"g\n\x15Event\
-    MessagePluginAdd\x128\n\x06plugin\x18\x01\x20\x01(\x0b2\x1a.KPProto.Msg.\
-    MessagePluginR\x06pluginB\x04\xc8\xde\x1f\x01\x12\x14\n\x05error\x18\x02\
-    \x20\x01(\tR\x05error\"j\n\x18EventMessagePluginRemove\x128\n\x06plugin\
-    \x18\x01\x20\x01(\x0b2\x1a.KPProto.Msg.MessagePluginR\x06pluginB\x04\xc8\
-    \xde\x1f\x01\x12\x14\n\x05error\x18\x02\x20\x01(\tR\x05error\"j\n\x16Eve\
-    ntMessagePluginList\x12:\n\x07plugins\x18\x01\x20\x03(\x0b2\x1a.KPProto.\
-    Msg.MessagePluginR\x07pluginsB\x04\xc8\xde\x1f\x01\x12\x14\n\x05error\
-    \x18\x02\x20\x01(\tR\x05error\"j\n\x18EventMessagePluginUpdate\x128\n\
-    \x06plugin\x18\x01\x20\x01(\x0b2\x1a.KPProto.Msg.MessagePluginR\x06plugi\
-    nB\x04\xc8\xde\x1f\x01\x12\x14\n\x05error\x18\x02\x20\x01(\tR\x05errorB2\
-    Z0github.com/bytelang/kplayer/types/core/proto/msgJ\x9b\x07\n\x06\x12\
-    \x04\0\0\x20\x01\n\x08\n\x01\x0c\x12\x03\0\0\x12\n\x08\n\x01\x02\x12\x03\
-    \x02\0\x14\n\x08\n\x01\x08\x12\x03\x04\0G\n\t\n\x02\x08\x0b\x12\x03\x04\
-    \0G\n\t\n\x02\x03\0\x12\x03\x06\0\x1e\n\n\n\x02\x04\0\x12\x04\x08\0\x0c\
-    \x01\n\n\n\x03\x04\0\x01\x12\x03\x08\x08\x15\n\x0b\n\x04\x04\0\x02\0\x12\
-    \x03\t\x08\x18\n\x0c\n\x05\x04\0\x02\0\x05\x12\x03\t\x08\x0e\n\x0c\n\x05\
-    \x04\0\x02\0\x01\x12\x03\t\x0f\x13\n\x0c\n\x05\x04\0\x02\0\x03\x12\x03\t\
-    \x16\x17\n\x0b\n\x04\x04\0\x02\x01\x12\x03\n\x08\x1a\n\x0c\n\x05\x04\0\
-    \x02\x01\x05\x12\x03\n\x08\x0e\n\x0c\n\x05\x04\0\x02\x01\x01\x12\x03\n\
-    \x0f\x15\n\x0c\n\x05\x04\0\x02\x01\x03\x12\x03\n\x18\x19\n\x0b\n\x04\x04\
-    \0\x02\x02\x12\x03\x0b\x08'\n\x0c\n\x05\x04\0\x02\x02\x06\x12\x03\x0b\
-    \x08\x1b\n\x0c\n\x05\x04\0\x02\x02\x01\x12\x03\x0b\x1c\"\n\x0c\n\x05\x04\
-    \0\x02\x02\x03\x12\x03\x0b%&\n\n\n\x02\x04\x01\x12\x04\x0e\0\x11\x01\n\n\
-    \n\x03\x04\x01\x01\x12\x03\x0e\x08\x1d\n\x0b\n\x04\x04\x01\x02\0\x12\x03\
-    \x0f\x08?\n\x0c\n\x05\x04\x01\x02\0\x06\x12\x03\x0f\x08\x15\n\x0c\n\x05\
-    \x04\x01\x02\0\x01\x12\x03\x0f\x16\x1c\n\x0c\n\x05\x04\x01\x02\0\x03\x12\
-    \x03\x0f\x1f\x20\n\x0c\n\x05\x04\x01\x02\0\x08\x12\x03\x0f!>\n\x0f\n\x08\
-    \x04\x01\x02\0\x08\xe9\xfb\x03\x12\x03\x0f\"=\n\x0b\n\x04\x04\x01\x02\
-    \x01\x12\x03\x10\x08\x19\n\x0c\n\x05\x04\x01\x02\x01\x05\x12\x03\x10\x08\
-    \x0e\n\x0c\n\x05\x04\x01\x02\x01\x01\x12\x03\x10\x0f\x14\n\x0c\n\x05\x04\
-    \x01\x02\x01\x03\x12\x03\x10\x17\x18\n\n\n\x02\x04\x02\x12\x04\x13\0\x16\
-    \x01\n\n\n\x03\x04\x02\x01\x12\x03\x13\x08\x20\n\x0b\n\x04\x04\x02\x02\0\
-    \x12\x03\x14\x08?\n\x0c\n\x05\x04\x02\x02\0\x06\x12\x03\x14\x08\x15\n\
-    \x0c\n\x05\x04\x02\x02\0\x01\x12\x03\x14\x16\x1c\n\x0c\n\x05\x04\x02\x02\
-    \0\x03\x12\x03\x14\x1f\x20\n\x0c\n\x05\x04\x02\x02\0\x08\x12\x03\x14!>\n\
-    \x0f\n\x08\x04\x02\x02\0\x08\xe9\xfb\x03\x12\x03\x14\"=\n\x0b\n\x04\x04\
-    \x02\x02\x01\x12\x03\x15\x08\x19\n\x0c\n\x05\x04\x02\x02\x01\x05\x12\x03\
-    \x15\x08\x0e\n\x0c\n\x05\x04\x02\x02\x01\x01\x12\x03\x15\x0f\x14\n\x0c\n\
-    \x05\x04\x02\x02\x01\x03\x12\x03\x15\x17\x18\n\n\n\x02\x04\x03\x12\x04\
-    \x18\0\x1b\x01\n\n\n\x03\x04\x03\x01\x12\x03\x18\x08\x1e\n\x0b\n\x04\x04\
-    \x03\x02\0\x12\x03\x19\x08I\n\x0c\n\x05\x04\x03\x02\0\x04\x12\x03\x19\
-    \x08\x10\n\x0c\n\x05\x04\x03\x02\0\x06\x12\x03\x19\x11\x1e\n\x0c\n\x05\
-    \x04\x03\x02\0\x01\x12\x03\x19\x1f&\n\x0c\n\x05\x04\x03\x02\0\x03\x12\
-    \x03\x19)*\n\x0c\n\x05\x04\x03\x02\0\x08\x12\x03\x19+H\n\x0f\n\x08\x04\
-    \x03\x02\0\x08\xe9\xfb\x03\x12\x03\x19,G\n\x0b\n\x04\x04\x03\x02\x01\x12\
-    \x03\x1a\x08\x19\n\x0c\n\x05\x04\x03\x02\x01\x05\x12\x03\x1a\x08\x0e\n\
-    \x0c\n\x05\x04\x03\x02\x01\x01\x12\x03\x1a\x0f\x14\n\x0c\n\x05\x04\x03\
-    \x02\x01\x03\x12\x03\x1a\x17\x18\n\n\n\x02\x04\x04\x12\x04\x1d\0\x20\x01\
-    \n\n\n\x03\x04\x04\x01\x12\x03\x1d\x08\x20\n\x0b\n\x04\x04\x04\x02\0\x12\
-    \x03\x1e\x08?\n\x0c\n\x05\x04\x04\x02\0\x06\x12\x03\x1e\x08\x15\n\x0c\n\
-    \x05\x04\x04\x02\0\x01\x12\x03\x1e\x16\x1c\n\x0c\n\x05\x04\x04\x02\0\x03\
-    \x12\x03\x1e\x1f\x20\n\x0c\n\x05\x04\x04\x02\0\x08\x12\x03\x1e!>\n\x0f\n\
-    \x08\x04\x04\x02\0\x08\xe9\xfb\x03\x12\x03\x1e\"=\n\x0b\n\x04\x04\x04\
-    \x02\x01\x12\x03\x1f\x08\x19\n\x0c\n\x05\x04\x04\x02\x01\x05\x12\x03\x1f\
-    \x08\x0e\n\x0c\n\x05\x04\x04\x02\x01\x01\x12\x03\x1f\x0f\x14\n\x0c\n\x05\
-    \x04\x04\x02\x01\x03\x12\x03\x1f\x17\x18b\x06proto3\
+    \n\x1aproto/msg/msg_plugin.proto\x12\x0bKPProto.Msg\"\x9e\x02\n\rMessage\
+    Plugin\x12\x12\n\x04path\x18\x01\x20\x01(\tR\x04path\x12\x16\n\x06unique\
+    \x18\x02\x20\x01(\tR\x06unique\x12\x12\n\x04name\x18\x03\x20\x01(\tR\x04\
+    name\x12\x16\n\x06author\x18\x04\x20\x01(\tR\x06author\x12\x1d\n\nmedia_\
+    type\x18\x05\x20\x01(\x05R\tmediaType\x12\x1b\n\tsub_count\x18\x06\x20\
+    \x01(\x05R\x08subCount\x12>\n\x06params\x18\x07\x20\x03(\x0b2&.KPProto.M\
+    sg.MessagePlugin.ParamsEntryR\x06params\x1a9\n\x0bParamsEntry\x12\x10\n\
+    \x03key\x18\x01\x20\x01(\tR\x03key\x12\x14\n\x05value\x18\x02\x20\x01(\t\
+    R\x05value:\x028\x01\"a\n\x15EventMessagePluginAdd\x122\n\x06plugin\x18\
+    \x01\x20\x01(\x0b2\x1a.KPProto.Msg.MessagePluginR\x06plugin\x12\x14\n\
+    \x05error\x18\x02\x20\x01(\tR\x05error\"d\n\x18EventMessagePluginRemove\
+    \x122\n\x06plugin\x18\x01\x20\x01(\x0b2\x1a.KPProto.Msg.MessagePluginR\
+    \x06plugin\x12\x14\n\x05error\x18\x02\x20\x01(\tR\x05error\"d\n\x16Event\
+    MessagePluginList\x124\n\x07plugins\x18\x01\x20\x03(\x0b2\x1a.KPProto.Ms\
+    g.MessagePluginR\x07plugins\x12\x14\n\x05error\x18\x02\x20\x01(\tR\x05er\
+    ror\"d\n\x18EventMessagePluginUpdate\x122\n\x06plugin\x18\x01\x20\x01(\
+    \x0b2\x1a.KPProto.Msg.MessagePluginR\x06plugin\x12\x14\n\x05error\x18\
+    \x02\x20\x01(\tR\x05errorB2Z0github.com/bytelang/kplayer/types/core/prot\
+    o/msgJ\xf0\x07\n\x06\x12\x04\0\0\"\x01\n\x08\n\x01\x0c\x12\x03\0\0\x12\n\
+    \x08\n\x01\x02\x12\x03\x02\0\x14\n\x08\n\x01\x08\x12\x03\x04\0G\n\t\n\
+    \x02\x08\x0b\x12\x03\x04\0G\n\n\n\x02\x04\0\x12\x04\x06\0\x0e\x01\n\n\n\
+    \x03\x04\0\x01\x12\x03\x06\x08\x15\n\x0b\n\x04\x04\0\x02\0\x12\x03\x07\
+    \x02\x12\n\x0c\n\x05\x04\0\x02\0\x05\x12\x03\x07\x02\x08\n\x0c\n\x05\x04\
+    \0\x02\0\x01\x12\x03\x07\t\r\n\x0c\n\x05\x04\0\x02\0\x03\x12\x03\x07\x10\
+    \x11\n\x0b\n\x04\x04\0\x02\x01\x12\x03\x08\x02\x14\n\x0c\n\x05\x04\0\x02\
+    \x01\x05\x12\x03\x08\x02\x08\n\x0c\n\x05\x04\0\x02\x01\x01\x12\x03\x08\t\
+    \x0f\n\x0c\n\x05\x04\0\x02\x01\x03\x12\x03\x08\x12\x13\n\x0b\n\x04\x04\0\
+    \x02\x02\x12\x03\t\x02\x12\n\x0c\n\x05\x04\0\x02\x02\x05\x12\x03\t\x02\
+    \x08\n\x0c\n\x05\x04\0\x02\x02\x01\x12\x03\t\t\r\n\x0c\n\x05\x04\0\x02\
+    \x02\x03\x12\x03\t\x10\x11\n\x0b\n\x04\x04\0\x02\x03\x12\x03\n\x02\x14\n\
+    \x0c\n\x05\x04\0\x02\x03\x05\x12\x03\n\x02\x08\n\x0c\n\x05\x04\0\x02\x03\
+    \x01\x12\x03\n\t\x0f\n\x0c\n\x05\x04\0\x02\x03\x03\x12\x03\n\x12\x13\n\
+    \x0b\n\x04\x04\0\x02\x04\x12\x03\x0b\x02\x17\n\x0c\n\x05\x04\0\x02\x04\
+    \x05\x12\x03\x0b\x02\x07\n\x0c\n\x05\x04\0\x02\x04\x01\x12\x03\x0b\x08\
+    \x12\n\x0c\n\x05\x04\0\x02\x04\x03\x12\x03\x0b\x15\x16\n\x0b\n\x04\x04\0\
+    \x02\x05\x12\x03\x0c\x02\x16\n\x0c\n\x05\x04\0\x02\x05\x05\x12\x03\x0c\
+    \x02\x07\n\x0c\n\x05\x04\0\x02\x05\x01\x12\x03\x0c\x08\x11\n\x0c\n\x05\
+    \x04\0\x02\x05\x03\x12\x03\x0c\x14\x15\n\x0b\n\x04\x04\0\x02\x06\x12\x03\
+    \r\x02!\n\x0c\n\x05\x04\0\x02\x06\x06\x12\x03\r\x02\x15\n\x0c\n\x05\x04\
+    \0\x02\x06\x01\x12\x03\r\x16\x1c\n\x0c\n\x05\x04\0\x02\x06\x03\x12\x03\r\
+    \x1f\x20\n\n\n\x02\x04\x01\x12\x04\x10\0\x13\x01\n\n\n\x03\x04\x01\x01\
+    \x12\x03\x10\x08\x1d\n\x0b\n\x04\x04\x01\x02\0\x12\x03\x11\x02\x1b\n\x0c\
+    \n\x05\x04\x01\x02\0\x06\x12\x03\x11\x02\x0f\n\x0c\n\x05\x04\x01\x02\0\
+    \x01\x12\x03\x11\x10\x16\n\x0c\n\x05\x04\x01\x02\0\x03\x12\x03\x11\x19\
+    \x1a\n\x0b\n\x04\x04\x01\x02\x01\x12\x03\x12\x02\x13\n\x0c\n\x05\x04\x01\
+    \x02\x01\x05\x12\x03\x12\x02\x08\n\x0c\n\x05\x04\x01\x02\x01\x01\x12\x03\
+    \x12\t\x0e\n\x0c\n\x05\x04\x01\x02\x01\x03\x12\x03\x12\x11\x12\n\n\n\x02\
+    \x04\x02\x12\x04\x15\0\x18\x01\n\n\n\x03\x04\x02\x01\x12\x03\x15\x08\x20\
+    \n\x0b\n\x04\x04\x02\x02\0\x12\x03\x16\x02\x1b\n\x0c\n\x05\x04\x02\x02\0\
+    \x06\x12\x03\x16\x02\x0f\n\x0c\n\x05\x04\x02\x02\0\x01\x12\x03\x16\x10\
+    \x16\n\x0c\n\x05\x04\x02\x02\0\x03\x12\x03\x16\x19\x1a\n\x0b\n\x04\x04\
+    \x02\x02\x01\x12\x03\x17\x02\x13\n\x0c\n\x05\x04\x02\x02\x01\x05\x12\x03\
+    \x17\x02\x08\n\x0c\n\x05\x04\x02\x02\x01\x01\x12\x03\x17\t\x0e\n\x0c\n\
+    \x05\x04\x02\x02\x01\x03\x12\x03\x17\x11\x12\n\n\n\x02\x04\x03\x12\x04\
+    \x1a\0\x1d\x01\n\n\n\x03\x04\x03\x01\x12\x03\x1a\x08\x1e\n\x0b\n\x04\x04\
+    \x03\x02\0\x12\x03\x1b\x02%\n\x0c\n\x05\x04\x03\x02\0\x04\x12\x03\x1b\
+    \x02\n\n\x0c\n\x05\x04\x03\x02\0\x06\x12\x03\x1b\x0b\x18\n\x0c\n\x05\x04\
+    \x03\x02\0\x01\x12\x03\x1b\x19\x20\n\x0c\n\x05\x04\x03\x02\0\x03\x12\x03\
+    \x1b#$\n\x0b\n\x04\x04\x03\x02\x01\x12\x03\x1c\x02\x13\n\x0c\n\x05\x04\
+    \x03\x02\x01\x05\x12\x03\x1c\x02\x08\n\x0c\n\x05\x04\x03\x02\x01\x01\x12\
+    \x03\x1c\t\x0e\n\x0c\n\x05\x04\x03\x02\x01\x03\x12\x03\x1c\x11\x12\n\n\n\
+    \x02\x04\x04\x12\x04\x1f\0\"\x01\n\n\n\x03\x04\x04\x01\x12\x03\x1f\x08\
+    \x20\n\x0b\n\x04\x04\x04\x02\0\x12\x03\x20\x02\x1b\n\x0c\n\x05\x04\x04\
+    \x02\0\x06\x12\x03\x20\x02\x0f\n\x0c\n\x05\x04\x04\x02\0\x01\x12\x03\x20\
+    \x10\x16\n\x0c\n\x05\x04\x04\x02\0\x03\x12\x03\x20\x19\x1a\n\x0b\n\x04\
+    \x04\x04\x02\x01\x12\x03!\x02\x13\n\x0c\n\x05\x04\x04\x02\x01\x05\x12\
+    \x03!\x02\x08\n\x0c\n\x05\x04\x04\x02\x01\x01\x12\x03!\t\x0e\n\x0c\n\x05\
+    \x04\x04\x02\x01\x03\x12\x03!\x11\x12b\x06proto3\
 ";
 
 static file_descriptor_proto_lazy: ::protobuf::rt::LazyV2<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::rt::LazyV2::INIT;
