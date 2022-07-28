@@ -26,7 +26,7 @@ macro_rules! version {
     () => {
         #[no_mangle]
         pub extern "C" fn GetVersion() -> i32 {
-            10500
+            10501
         }
     };
 }
