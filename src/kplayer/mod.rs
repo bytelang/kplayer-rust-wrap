@@ -109,6 +109,7 @@ pub extern "C" fn GetArgIterator() -> i32 {
             .get_args(util::argument::args_vec_to_map(custom_args).unwrap());
 
         if ARGS_INDEX >= args.len() {
+            ARGS_INDEX = 0;
             return 0;
         }
 
