@@ -56,7 +56,7 @@ pub trait BasePlugin {
 
     // validate args
     fn validate_user_args(
-        &self,
+        &mut self,
         args: std::collections::HashMap<String, String>,
     ) -> Result<bool, &'static str>;
 
