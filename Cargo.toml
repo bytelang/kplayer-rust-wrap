@@ -1,6 +1,6 @@
 [package]
 name = "kplayer-rust-wrap"
-version = "2.1.5.1"
+version = "1.5.8"
 authors = ["karaler <karaler@bytelang.com>"]
 description = "libkplayer plugin wrap for rust"
 homepage = "https://kplayer.bytelang.cn/development/plugin"
