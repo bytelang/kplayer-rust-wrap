@@ -17,6 +17,7 @@ pub struct Timer {
     tid: i32,
     milliseconds: i32,
 }
+
 impl Timer {
     pub fn get_tid(&self) -> i32 {
         self.tid
@@ -32,21 +33,72 @@ impl Timer {
     }
 }
 
-pub trait BasePlugin {
+pub struct BasePlugin {
+    args: std::collections::HashMap<String, String>,
+    fill_args: Vec<String>,
+    guard_args: Vec<String>,
+}
+
+pub fn new() -> BasePlugin {
+    return BasePlugin {
+        args: std::collections::HashMap::new(),
+        fill_args: Vec::new(),
+        guard_args: Vec::new(),
+    };
+}
+
+impl BasePlugin {
+    pub fn append_arg(&mut self, key: &'static str, value: &'static str) {
+        self.args.insert(key.to_string(), value.to_string());
+    }
+    pub fn get_arg(&self, key: &'static str) -> Option<String> {
+        match self.args.get(&key.to_string()) {
+            Some(_value) => Some(String::from(_value)),
+            None => None,
+        }
+    }
+
+    pub fn get_args(&self) -> std::collections::HashMap<String, String> {
+        let mut _args = std::collections::HashMap::new();
+
+        for (key, value) in &self.args {
+            _args.insert(String::from(key), String::from(value));
+        }
+
+        return _args;
+    }
+
+    pub fn set_arg(&mut self, key: String, value: String) {
+        self.args.insert(key, value);
+    }
+
+    pub fn append_fill_arg(&mut self, key: &'static str) {
+        self.fill_args.push(key.to_string())
+    }
+
+    pub fn get_fill_args(&self) -> &Vec<String> {
+        &self.fill_args
+    }
+
+    pub fn append_guard_arg(&mut self, key: &'static str) {
+        self.guard_args.push(key.to_string())
+    }
+
+    pub fn get_guard_args(&self) -> &Vec<String> {
+        &self.guard_args
+    }
+}
+
+
+pub trait IBasePlugin {
+    // get base plugin
+    fn get_base_plugin(&mut self) -> &mut BasePlugin;
+
     // get plugin name
     fn get_name(&self) -> String;
 
     // get plugin author
     fn get_author(&self) -> String;
-
-    // get plugin args
-    fn get_args(&mut self, args: std::collections::HashMap<String, String>) -> Vec<String>;
-
-    // get plugin allow custom args
-    fn get_allow_custom_args(&self) -> Vec<&'static str> {
-        let vec: Vec<&'static str> = Vec::new();
-        vec
-    }
 
     // get plugin filter name
     fn get_filter_name(&self) -> String;

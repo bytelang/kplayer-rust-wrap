@@ -1,3 +1,5 @@
+use std::collections::BTreeMap;
+
 pub fn args_vec_to_map(
     custom_args: Vec<String>,
 ) -> std::result::Result<std::collections::HashMap<String, String>, &'static str> {
@@ -11,4 +13,20 @@ pub fn args_vec_to_map(
     }
 
     Ok(args)
+}
+
+pub fn args_map_to_vec(args: std::collections::HashMap<String, String>) -> Vec<String> {
+    let mut vec: Vec<String> = Vec::new();
+
+    let mut sort_map = BTreeMap::new();
+
+    for (key, value) in args {
+        sort_map.insert(key, value);
+    }
+
+    for(key, value) in sort_map{
+        vec.push(format!("{}={}", key,value));
+    }
+
+    vec
 }

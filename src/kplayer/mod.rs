@@ -15,10 +15,11 @@ extern "C" {
 
 static mut ARGS_INDEX: usize = 0;
 static mut ALLOW_ARGS_INDEX: usize = 0;
-static mut INSTANCES: Vec<Box<dyn plugin::BasePlugin>> = Vec::new();
+static mut CULL_ARGS_INDEX: usize = 0;
+static mut INSTANCES: Vec<Box<dyn plugin::IBasePlugin>> = Vec::new();
 static mut INSTANCES_INDEX: usize = 0;
 
-pub fn export_plugin(p: Box<dyn plugin::BasePlugin>) {
+pub fn export_plugin(p: Box<dyn plugin::IBasePlugin>) {
     unsafe {
         INSTANCES.push(p);
     }
@@ -83,8 +84,6 @@ pub extern "C" fn GetMediaType() -> i32 {
 
 #[no_mangle]
 pub extern "C" fn GetArgIterator() -> i32 {
-    let mut custom_args: Vec<String> = Vec::new();
-
     unsafe {
         // get custom args
         loop {
@@ -94,19 +93,27 @@ pub extern "C" fn GetArgIterator() -> i32 {
             }
 
             match util::string::DynamicString::receive(re_index) {
-                Ok(_ok) => custom_args.push(_ok),
+                Ok(_value) => {
+                    let sp: Vec<&str> = _value.split('=').collect();
+                    if sp.len() < 2 {
+                        return -1;
+                    }
+
+                    // must fill args
+                    if INSTANCES[INSTANCES_INDEX].get_base_plugin().get_fill_args().contains(&sp[0].to_string()) {
+                        INSTANCES[INSTANCES_INDEX].get_base_plugin().set_arg(sp[0].to_string(), sp[1].to_string());
+                    }
+                }
                 Err(_err) => {
                     return util::string::DynamicString::from(
                         String::from("plugin receive args error").as_bytes(),
-                    )
-                    .get_index()
+                    ).get_index();
                 }
             }
         }
 
         // get plugin args
-        let args = INSTANCES[INSTANCES_INDEX]
-            .get_args(util::argument::args_vec_to_map(custom_args).unwrap());
+        let args = util::argument::args_map_to_vec(INSTANCES[INSTANCES_INDEX].get_base_plugin().get_args());
 
         if ARGS_INDEX >= args.len() {
             ARGS_INDEX = 0;
@@ -124,7 +131,7 @@ pub extern "C" fn GetArgIterator() -> i32 {
 pub extern "C" fn GetAllowArgIterator() -> i32 {
     unsafe {
         // get plugin allow override args
-        let args = INSTANCES[INSTANCES_INDEX].get_allow_custom_args();
+        let args = INSTANCES[INSTANCES_INDEX].get_base_plugin().get_fill_args();
 
         if ALLOW_ARGS_INDEX >= args.len() {
             return 0;
@@ -133,6 +140,24 @@ pub extern "C" fn GetAllowArgIterator() -> i32 {
         let iterator =
             util::string::DynamicString::from(args[ALLOW_ARGS_INDEX].as_bytes()).get_index();
         ALLOW_ARGS_INDEX = ALLOW_ARGS_INDEX + 1;
+
+        iterator
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn GetCullArgIterator() -> i32 {
+    unsafe {
+        // get plugin cull override args
+        let args = INSTANCES[INSTANCES_INDEX].get_base_plugin().get_guard_args();
+
+        if CULL_ARGS_INDEX >= args.len() {
+            return 0;
+        }
+
+        let iterator =
+            util::string::DynamicString::from(args[CULL_ARGS_INDEX].as_bytes()).get_index();
+        CULL_ARGS_INDEX = CULL_ARGS_INDEX + 1;
 
         iterator
     }
@@ -156,7 +181,7 @@ pub extern "C" fn ValidateUserArgs() -> i32 {
                     return util::string::DynamicString::from(
                         String::from("plugin receive args error").as_bytes(),
                     )
-                    .get_index()
+                        .get_index();
                 }
             }
         }
