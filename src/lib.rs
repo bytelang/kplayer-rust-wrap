@@ -1,32 +1,40 @@
+use std::collections::HashMap;
+use std::ops::Index;
+use crate::kplayer::unit::{KPPluginMediaType, KPPluginUnit, KPPluginUnitBasic};
+
 pub mod kplayer;
+pub mod common;
 
-#[macro_export]
-macro_rules! export {
-    ($($class_name: ident),*) => {
-        #[no_mangle]
-        pub extern "C" fn Initialization() -> i32 {
-            // export plugin instance
-            $(
-            kplayer::export_plugin(Box::new($class_name::new()));
-            )*
+#[derive(Default)]
+struct Example {}
 
-            // register timer
-            kplayer::register_task();
+impl KPPluginUnitBasic for Example {
+    fn get_filter(&self) -> String {
+        "drawtext".to_string()
+    }
 
-            // register subscribe
-            kplayer::register_message();
+    fn default_arguments(&self) -> HashMap<String, String> {
+        let mut hash = HashMap::new();
+        hash.insert("text", "hello kplayer");
+        hash.insert("fontsize", "17");
+        hash.insert("fontcolor", "white");
 
-            0
-        }
-    };
+        hash.iter().map(|(k, v)| {
+            (k.to_string(), v.to_string())
+        }).collect()
+    }
+
+    fn allow_arguments(&self) -> Vec<String> {
+        vec![]
+    }
+
+    fn load(&self, arguments: HashMap<String, String>) -> Result<(), String> {
+        Ok(())
+    }
 }
 
-#[macro_export]
-macro_rules! version {
-    () => {
-        #[no_mangle]
-        pub extern "C" fn GetVersion() -> i32 {
-            10502
-        }
-    };
+#[no_mangle]
+pub extern "C" fn init() {
+    KPPluginUnit::init("text", "example", KPPluginMediaType::Video);
+    KPPluginUnit::push(Box::new(Example::default()));
 }
