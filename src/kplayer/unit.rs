@@ -1,6 +1,8 @@
-use std::collections::HashMap;
+use std::collections::{BTreeMap, HashMap};
 use std::error::Error;
+use std::fs::File;
 use std::hash::Hash;
+use std::io::Write;
 use std::mem::forget;
 use std::ops::Deref;
 use std::sync::{Arc, Mutex};
@@ -17,9 +19,17 @@ pub enum KPPluginMediaType {
     Audio,
 }
 
+#[derive(Copy, Clone)]
+pub enum KPPluginFilterType {
+    None,
+    Main,
+    Side,
+}
+
 pub trait KPPluginUnitBasic {
-    fn get_filter(&self) -> String;
-    fn default_arguments(&self) -> HashMap<String, String>;
+    fn get_filter_name(&self) -> String;
+    fn get_filter_type(&self) -> KPPluginFilterType;
+    fn default_arguments(&self) -> BTreeMap<String, String>;
     fn allow_arguments(&self) -> Vec<String>;
     fn load(&self, arguments: HashMap<String, String>) -> Result<(), String>;
 }
@@ -28,8 +38,7 @@ pub struct KPPluginUnit {
     pub name: String,
     pub author: String,
     pub media_type: KPPluginMediaType,
-    pub index: i64,
-    pub plugins: Vec<Vec<Box<dyn KPPluginUnitBasic>>>,
+    pub plugins: Vec<Box<dyn KPPluginUnitBasic>>,
 }
 
 impl KPPluginUnit {
@@ -38,7 +47,6 @@ impl KPPluginUnit {
             name,
             author,
             media_type,
-            index: -1,
             plugins: Vec::new(),
         }
     }
@@ -53,23 +61,7 @@ impl KPPluginUnit {
     }
     pub fn push(basic: Box<dyn KPPluginUnitBasic>) {
         let instance = unsafe { &mut *INSTANCE_PTR };
-
-        unsafe {
-            println!("{} ###{:?}", instance.index, INSTANCE_PTR);
-        }
-        println!("###{}", instance.index);
-        if instance.index == -1 {
-            instance.plugins.push(vec![basic]);
-            instance.index = 0;
-        } else {
-            instance.plugins[instance.index as usize].push(basic);
-        }
-    }
-
-    pub fn step() {
-        let instance = unsafe { &mut *INSTANCE_PTR };
-
-        instance.index += 1;
+        instance.plugins.push(basic);
     }
 }
 
@@ -91,31 +83,10 @@ pub extern "C" fn get_instance_count() -> i64 {
     instance.plugins.len() as i64
 }
 
-#[no_mangle]
-pub extern "C" fn get_sub_instance_count(root_index: i64) -> i64 {
-    let instance = unsafe { &mut *INSTANCE_PTR };
-
-    match instance.plugins.get(root_index as usize) {
-        None => -1,
-        Some(vec) => {
-            vec.len() as i64
-        }
-    }
-}
-
 // =========================================== plugin basic ======================================= //
 #[no_mangle]
 pub extern "C" fn get_name(point: StringPoint) -> i32 {
     let instance = unsafe { &mut *INSTANCE_PTR };
-
-    // if instance.index < root_index {
-    //     return RESULT_ROOT_INDEX_NOT_FOUND;
-    // }
-    // if instance.plugins[root_index as usize].len() - 1 > sub_index as usize {
-    //     return RESULT_SUB_INDEX_NOT_FOUND;
-    // }
-    //
-    // let basic = &instance.plugins[root_index as usize][sub_index as usize];
     push_string(point, instance.name.to_string());
 
     RESULT_OK
@@ -134,3 +105,79 @@ pub extern "C" fn get_media_type() -> u32 {
     let instance = unsafe { &mut *INSTANCE_PTR };
     instance.media_type as u32
 }
+
+// =========================================== plugin items ======================================= //
+#[no_mangle]
+pub extern "C" fn get_instance_filter_name(index: i64, point: StringPoint) -> i32 {
+    let instance = unsafe { &mut *INSTANCE_PTR };
+
+    match instance.plugins.get(index as usize) {
+        None => {
+            return RESULT_INSTANCE_INDEX_NOT_FOUND;
+        }
+        Some(filter) => {
+            let filter_name = filter.get_filter_name().clone();
+            push_string(point, filter_name);
+        }
+    };
+
+    RESULT_OK
+}
+
+#[no_mangle]
+pub extern "C" fn get_instance_filter_type(index: i64) -> KPPluginFilterType {
+    let instance = unsafe { &mut *INSTANCE_PTR };
+
+    match instance.plugins.get(index as usize) {
+        None => {
+            KPPluginFilterType::None
+        }
+        Some(filter) => {
+            filter.get_filter_type().clone()
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn get_instance_default_arguments_key(index: i64, key_index: i64, key_point: StringPoint, value_point: StringPoint) -> i32 {
+    let instance = unsafe { &mut *INSTANCE_PTR };
+    if let None = instance.plugins.get(index as usize) {
+        return RESULT_INSTANCE_INDEX_NOT_FOUND;
+    }
+    let filter = instance.plugins.get(index as usize).unwrap();
+
+    let default_arguments = filter.default_arguments();
+    match default_arguments.iter().nth(key_index as usize) {
+        None => {
+            return RESULT_INSTANCE_COLLECTION_OUT_OF_INDEX;
+        }
+        Some((k, v)) => {
+            push_string(key_point, k.clone());
+            push_string(value_point, v.clone());
+        }
+    }
+
+    RESULT_OK
+}
+
+#[no_mangle]
+pub extern "C" fn get_instance_allow_arguments(index: i64, key_index: i64, value_point: StringPoint) -> i32 {
+    let instance = unsafe { &mut *INSTANCE_PTR };
+    if let None = instance.plugins.get(index as usize) {
+        return RESULT_INSTANCE_INDEX_NOT_FOUND;
+    }
+    let filter = instance.plugins.get(index as usize).unwrap();
+
+    let allow_arguments = filter.allow_arguments();
+    match allow_arguments.iter().nth(key_index as usize) {
+        None => {
+            return RESULT_INSTANCE_COLLECTION_OUT_OF_INDEX;
+        }
+        Some(value) => {
+            push_string(value_point, value.clone());
+        }
+    }
+
+    RESULT_OK
+}
+
