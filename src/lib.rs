@@ -9,6 +9,10 @@ pub mod common;
 struct Example {}
 
 impl KPPluginUnitBasic for Example {
+    fn get_name(&self) -> String {
+        "drawtext".to_string()
+    }
+
     fn get_filter_name(&self) -> String {
         "drawtext".to_string()
     }

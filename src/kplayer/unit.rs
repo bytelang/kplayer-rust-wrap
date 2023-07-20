@@ -27,6 +27,7 @@ pub enum KPPluginFilterType {
 }
 
 pub trait KPPluginUnitBasic {
+    fn get_name(&self) -> String;
     fn get_filter_name(&self) -> String;
     fn get_filter_type(&self) -> KPPluginFilterType;
     fn default_arguments(&self) -> BTreeMap<String, String>;
@@ -35,16 +36,16 @@ pub trait KPPluginUnitBasic {
 }
 
 pub struct KPPluginUnit {
-    pub name: String,
+    pub app: String,
     pub author: String,
     pub media_type: KPPluginMediaType,
     pub plugins: Vec<Box<dyn KPPluginUnitBasic>>,
 }
 
 impl KPPluginUnit {
-    pub fn new(name: String, author: String, media_type: KPPluginMediaType) -> KPPluginUnit {
+    pub fn new(app: String, author: String, media_type: KPPluginMediaType) -> KPPluginUnit {
         KPPluginUnit {
-            name,
+            app,
             author,
             media_type,
             plugins: Vec::new(),
@@ -85,9 +86,9 @@ pub extern "C" fn get_instance_count() -> i64 {
 
 // =========================================== plugin basic ======================================= //
 #[no_mangle]
-pub extern "C" fn get_name(point: StringPoint) -> i32 {
+pub extern "C" fn get_app(point: StringPoint) -> i32 {
     let instance = unsafe { &mut *INSTANCE_PTR };
-    push_string(point, instance.name.to_string());
+    push_string(point, instance.app.to_string());
 
     RESULT_OK
 }
@@ -107,6 +108,23 @@ pub extern "C" fn get_media_type() -> u32 {
 }
 
 // =========================================== plugin items ======================================= //
+#[no_mangle]
+pub extern "C" fn get_instance_name(index: i64, point: StringPoint) -> i32 {
+    let instance = unsafe { &mut *INSTANCE_PTR };
+
+    match instance.plugins.get(index as usize) {
+        None => {
+            return RESULT_INSTANCE_INDEX_NOT_FOUND;
+        }
+        Some(filter) => {
+            let name = filter.get_name().clone();
+            push_string(point, name);
+        }
+    };
+
+    RESULT_OK
+}
+
 #[no_mangle]
 pub extern "C" fn get_instance_filter_name(index: i64, point: StringPoint) -> i32 {
     let instance = unsafe { &mut *INSTANCE_PTR };
