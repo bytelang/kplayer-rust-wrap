@@ -1,5 +1,5 @@
 use std::collections::{BTreeMap, HashMap};
-use std::ops::Index;
+
 use crate::kplayer::unit::{KPPluginFilterType, KPPluginMediaType, KPPluginUnit, KPPluginUnitBasic};
 
 pub mod kplayer;
@@ -40,11 +40,11 @@ impl KPPluginUnitBasic for Example1 {
         }).collect()
     }
 
-    fn update_arguments(&mut self, key: String, value: String) -> Result<(), String> {
+    fn update_arguments(&mut self, _key: String, _value: String) -> Result<(), String> {
         Ok(())
     }
 
-    fn hook_open(&self, arguments: HashMap<String, String>) -> Result<BTreeMap<String, String>, String> {
+    fn hook_open(&self, _arguments: HashMap<String, String>) -> Result<BTreeMap<String, String>, String> {
         Ok(BTreeMap::new())
     }
 }
@@ -85,11 +85,11 @@ impl KPPluginUnitBasic for Example2 {
         }).collect()
     }
 
-    fn update_arguments(&mut self, key: String, value: String) -> Result<(), String> {
+    fn update_arguments(&mut self, _key: String, _value: String) -> Result<(), String> {
         Ok(())
     }
 
-    fn hook_open(&self, arguments: HashMap<String, String>) -> Result<BTreeMap<String, String>, String> {
+    fn hook_open(&self, _arguments: HashMap<String, String>) -> Result<BTreeMap<String, String>, String> {
         Ok(BTreeMap::new())
     }
 }
