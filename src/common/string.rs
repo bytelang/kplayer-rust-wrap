@@ -1,7 +1,3 @@
-
-
-
-
 #[link(wasm_import_module = "2.0.0")]
 extern {
     fn string_push(point: u64, chr: u32) -> u64;
