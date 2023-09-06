@@ -25,17 +25,8 @@ pub trait KPPluginUnitBasic {
     fn default_arguments(&self) -> BTreeMap<String, String>;
     fn allow_arguments(&self) -> Vec<String>;
     fn update_arguments(&mut self, key: String, value: String) -> Result<(), String>;
-
-    // This function stage has populated the user-specified parameters and, if necessary, allows for custom parameters to be used for conversion and assignment operations.
-    // For example, performing secondary naming operations on filters.
-    //
-    // Typically, the environment required by this stage plugin has already been set up.
-    // Here, you can validate whether the content of the parameters is correct.
-    //
-    // Example:
-    // allow users to set the key for font color as "custom_color".
-    // Here, you can check if "custom_color" is set and update the new key that needs to be updated through a re-set operation.
-    fn hook_open(&self, arguments: HashMap<String, String>) -> Result<BTreeMap<String, String>, String>;
+    fn notify_subscribe(&self, action: String, message: String) {}
+    fn notify_created(&self) -> Result<(), String>;
 }
 
 pub struct KPPluginUnit {
@@ -218,5 +209,27 @@ pub extern "C" fn update_arguments(key_point: StringPoint, value_point: StringPo
     RESULT_OK
 }
 
+#[no_mangle]
+pub extern "C" fn notify_subscribe(message_point: StringPoint) -> i32 {
+    let message = pull_string(message_point);
 
+    let instance = unsafe { &mut *INSTANCE_PTR };
+    for plugin in instance.plugins.iter_mut() {
+        // @TODO parse message
+        // return err
 
+        plugin.notify_subscribe("".to_string(), "".to_string());
+    }
+    RESULT_OK
+}
+
+#[no_mangle]
+pub extern "C" fn notify_created() -> i32 {
+    let instance = unsafe { &mut *INSTANCE_PTR };
+    for plugin in instance.plugins.iter_mut() {
+        if let Err(err) = plugin.notify_created() {
+            return RESULT_INSTANCE_NOTIFY_CREATED;
+        }
+    }
+    RESULT_OK
+}
