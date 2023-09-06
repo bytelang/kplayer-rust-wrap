@@ -8,7 +8,7 @@ use std::ops::Deref;
 use std::sync::{Arc, Mutex};
 use lazy_static::lazy_static;
 use crate::common::error::*;
-use crate::common::string::{push_string, StringPoint};
+use crate::common::string::{pull_string, push_string, StringPoint};
 
 const DRIVER_VERSION: &str = "2.0.0";
 static mut INSTANCE_PTR: *mut KPPluginUnit = 0x0 as *mut KPPluginUnit;
@@ -32,7 +32,18 @@ pub trait KPPluginUnitBasic {
     fn get_filter_type(&self) -> KPPluginFilterType;
     fn default_arguments(&self) -> BTreeMap<String, String>;
     fn allow_arguments(&self) -> Vec<String>;
-    fn load(&self, arguments: HashMap<String, String>) -> Result<(), String>;
+    fn update_arguments(&mut self, key: String, value: String) -> Result<(), String>;
+
+    // This function stage has populated the user-specified parameters and, if necessary, allows for custom parameters to be used for conversion and assignment operations.
+    // For example, performing secondary naming operations on filters.
+    //
+    // Typically, the environment required by this stage plugin has already been set up.
+    // Here, you can validate whether the content of the parameters is correct.
+    //
+    // Example:
+    // allow users to set the key for font color as "custom_color".
+    // Here, you can check if "custom_color" is set and update the new key that needs to be updated through a re-set operation.
+    fn hook_open(&self, arguments: HashMap<String, String>) -> Result<BTreeMap<String, String>, String>;
 }
 
 pub struct KPPluginUnit {
@@ -51,10 +62,10 @@ impl KPPluginUnit {
             plugins: Vec::new(),
         }
     }
-    pub fn init<T: ToString, A: ToString>(name: T, author: A, media_type: KPPluginMediaType) {
+    pub fn init<T: ToString, A: ToString>(app: T, author: A, media_type: KPPluginMediaType) {
         unsafe {
             if INSTANCE_PTR == 0x0 as *mut KPPluginUnit {
-                let unit = Box::new(KPPluginUnit::new(name.to_string(), author.to_string(), media_type));
+                let unit = Box::new(KPPluginUnit::new(app.to_string(), author.to_string(), media_type));
                 let ptr: &'static mut KPPluginUnit = Box::leak(unit);
                 INSTANCE_PTR = ptr as *mut KPPluginUnit;
             }
@@ -198,4 +209,22 @@ pub extern "C" fn get_instance_allow_arguments(index: i64, key_index: i64, value
 
     RESULT_OK
 }
+
+#[no_mangle]
+pub extern "C" fn update_arguments(key_point: StringPoint, value_point: StringPoint) -> i32 {
+    let key = pull_string(key_point);
+    let value = pull_string(value_point);
+    let instance = unsafe { &mut *INSTANCE_PTR };
+    for plugin in instance.plugins.iter_mut() {
+        match plugin.update_arguments(key.clone(), value.clone()) {
+            Ok(_) => {}
+            Err(_) => {
+                return RESULT_INSTANCE_UPDATE_ARGUMENT_FAILED;
+            }
+        }
+    }
+    RESULT_OK
+}
+
+
 
