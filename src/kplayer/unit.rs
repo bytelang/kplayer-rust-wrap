@@ -1,8 +1,12 @@
 use std::collections::{BTreeMap, HashMap};
+use std::sync::{Arc, Mutex};
+use serde_derive::Deserialize;
 use crate::common::error::*;
 use crate::common::string::{pull_string, push_string, StringPoint};
+use crate::error;
 
 const DRIVER_VERSION: &str = "2.0.0";
+pub static mut APP: Option<String> = None;
 static mut INSTANCE_PTR: *mut KPPluginUnit = 0x0 as *mut KPPluginUnit;
 
 #[derive(Copy, Clone)]
@@ -47,6 +51,10 @@ impl KPPluginUnit {
     }
     pub fn init<T: ToString, A: ToString>(app: T, author: A, media_type: KPPluginMediaType) {
         unsafe {
+            if APP.is_none() {
+                APP = Some(app.to_string());
+            }
+
             if INSTANCE_PTR == 0x0 as *mut KPPluginUnit {
                 let unit = Box::new(KPPluginUnit::new(app.to_string(), author.to_string(), media_type));
                 let ptr: &'static mut KPPluginUnit = Box::leak(unit);
@@ -209,16 +217,26 @@ pub extern "C" fn update_arguments(key_point: StringPoint, value_point: StringPo
     RESULT_OK
 }
 
+#[derive(Deserialize)]
+struct SubscribeMessage {
+    action: String,
+    message: String,
+}
+
 #[no_mangle]
 pub extern "C" fn notify_subscribe(message_point: StringPoint) -> i32 {
     let message = pull_string(message_point);
+    let subscribe_message = match serde_json::from_str::<SubscribeMessage>(message.as_str()) {
+        Ok(msg) => msg,
+        Err(err) => {
+            error!("invalid json format message. error: {}",err);
+            return -1;
+        }
+    };
 
     let instance = unsafe { &mut *INSTANCE_PTR };
     for plugin in instance.plugins.iter_mut() {
-        // @TODO parse message
-        // return err
-
-        plugin.notify_subscribe("".to_string(), "".to_string());
+        plugin.notify_subscribe(subscribe_message.action.clone(), subscribe_message.message.clone());
     }
     RESULT_OK
 }

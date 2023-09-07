@@ -6,10 +6,10 @@ pub mod common;
 
 #[macro_export]
 macro_rules! export {
-    ($text:expr, $example:expr, $media:expr $(, $push:expr)*) => {
+    ($app:expr, $author:expr, $media:expr $(, $push:expr)*) => {
         #[no_mangle]
         pub extern "C" fn init() {
-            KPPluginUnit::init($text, $example, $media);
+            KPPluginUnit::init($app, $author, $media);
             $(KPPluginUnit::push(Box::new($push));)*
         }
     };
