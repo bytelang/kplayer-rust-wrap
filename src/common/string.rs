@@ -45,6 +45,7 @@ impl Drop for BridgeString {
 }
 
 pub type StringPoint = u64;
+pub type CallBackPoint = u64;
 
 pub fn pull_string(point: StringPoint) -> String {
     let mut str = String::new();

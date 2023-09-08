@@ -1,13 +1,14 @@
 use std::collections::{BTreeMap, HashMap};
 use std::sync::{Arc, Mutex};
 use serde_derive::Deserialize;
+use crate::common::callback::{ClosureFunction, launch_callback};
 use crate::common::error::*;
-use crate::common::string::{pull_string, push_string, StringPoint};
+use crate::common::string::{CallBackPoint, pull_string, push_string, StringPoint};
 use crate::error;
 
 const DRIVER_VERSION: &str = "2.0.0";
-pub static mut APP: Option<String> = None;
-static mut INSTANCE_PTR: *mut KPPluginUnit = 0x0 as *mut KPPluginUnit;
+pub static mut APP: Option<Mutex<String>> = None;
+pub static mut INSTANCE_PTR: *mut KPPluginUnit = 0x0 as *mut KPPluginUnit;
 
 #[derive(Copy, Clone)]
 pub enum KPPluginMediaType {
@@ -28,31 +29,43 @@ pub trait KPPluginUnitBasic {
     fn get_filter_type(&self) -> KPPluginFilterType;
     fn default_arguments(&self) -> BTreeMap<String, String>;
     fn allow_arguments(&self) -> Vec<String>;
-    fn update_arguments(&mut self, key: String, value: String) -> Result<(), String>;
+    fn update_arguments(&mut self, arguments: HashMap<String, String>) -> Result<HashMap<String, String>, String>;
     fn notify_subscribe(&self, action: String, message: String) {}
-    fn notify_created(&self) -> Result<(), String>;
+    fn created(&mut self) -> Result<(), String> {
+        Ok(())
+    }
+    fn mounted(&mut self) -> Result<(), String> {
+        Ok(())
+    }
 }
 
 pub struct KPPluginUnit {
+    pub(self) is_created: bool,
+    pub(self) is_mounted: bool,
     pub app: String,
     pub author: String,
     pub media_type: KPPluginMediaType,
     pub plugins: Vec<Box<dyn KPPluginUnitBasic>>,
+    pub(crate) callback_mapping: Arc<Mutex<Vec<ClosureFunction>>>,
 }
 
 impl KPPluginUnit {
     pub fn new(app: String, author: String, media_type: KPPluginMediaType) -> KPPluginUnit {
         KPPluginUnit {
+            is_created: false,
+            is_mounted: false,
             app,
             author,
             media_type,
             plugins: Vec::new(),
+            callback_mapping: Arc::new(Mutex::new(Vec::new())),
         }
     }
+
     pub fn init<T: ToString, A: ToString>(app: T, author: A, media_type: KPPluginMediaType) {
         unsafe {
             if APP.is_none() {
-                APP = Some(app.to_string());
+                APP = Some(Mutex::new(app.to_string()));
             }
 
             if INSTANCE_PTR == 0x0 as *mut KPPluginUnit {
@@ -62,9 +75,29 @@ impl KPPluginUnit {
             }
         }
     }
+
     pub fn push(basic: Box<dyn KPPluginUnitBasic>) {
         let instance = unsafe { &mut *INSTANCE_PTR };
         instance.plugins.push(basic);
+    }
+
+    pub(crate) fn register_callback(&mut self, callback: ClosureFunction) -> u64 {
+        let mut callback_mapping = self.callback_mapping.lock().unwrap();
+        callback_mapping.push(callback);
+        callback_mapping.len() as u64
+    }
+
+    pub(crate) fn launch_callback(&mut self, point: CallBackPoint, params: Result<String, String>) {
+        let callback_mapping = self.callback_mapping.lock().unwrap();
+        callback_mapping.get(point as usize).unwrap()(params);
+    }
+
+    pub fn is_created(&self) -> bool {
+        self.is_created.clone()
+    }
+
+    pub fn is_mounted(&self) -> bool {
+        self.is_mounted.clone()
     }
 }
 
@@ -202,16 +235,40 @@ pub extern "C" fn get_instance_allow_arguments(index: i64, key_index: i64, value
 }
 
 #[no_mangle]
-pub extern "C" fn update_arguments(key_point: StringPoint, value_point: StringPoint) -> i32 {
-    let key = pull_string(key_point);
-    let value = pull_string(value_point);
+pub extern "C" fn update_arguments(name: StringPoint, update_argument_point: StringPoint, data_point: StringPoint) -> i32 {
+    let update_argument = pull_string(update_argument_point);
+    let name = pull_string(name);
+
+    let arguments = match serde_json::from_str::<HashMap<String, String>>(update_argument.as_str()) {
+        Ok(data) => data,
+        Err(err) => {
+            push_string(data_point, format!("parse argument failed, error: {}", err));
+            return RESULT_INSTANCE_UPDATE_ARGUMENT_FAILED;
+        }
+    };
+
+    // transform argument
     let instance = unsafe { &mut *INSTANCE_PTR };
     for plugin in instance.plugins.iter_mut() {
-        match plugin.update_arguments(key.clone(), value.clone()) {
-            Ok(_) => {}
-            Err(_) => {
-                return RESULT_INSTANCE_UPDATE_ARGUMENT_FAILED;
-            }
+        if plugin.get_name() == name {
+            return match plugin.update_arguments(arguments.clone()) {
+                Ok(result) => {
+                    match serde_json::to_string(&result) {
+                        Ok(transfer_data) => {
+                            push_string(data_point, transfer_data);
+                            0
+                        }
+                        Err(err) => {
+                            push_string(data_point, format!("invalid argument json format. transfer_data: {:?}, error: {}", result, err));
+                            RESULT_INSTANCE_UPDATE_ARGUMENT_FAILED
+                        }
+                    }
+                }
+                Err(err) => {
+                    push_string(data_point, format!("update argument failed. arguments: {:?}, error: {}", arguments, err));
+                    RESULT_INSTANCE_UPDATE_ARGUMENT_FAILED
+                }
+            };
         }
     }
     RESULT_OK
@@ -242,12 +299,40 @@ pub extern "C" fn notify_subscribe(message_point: StringPoint) -> i32 {
 }
 
 #[no_mangle]
+pub extern "C" fn notify_callback(callback: CallBackPoint, message_point: StringPoint, code: i32) {
+    let data = pull_string(message_point);
+    let result = {
+        if code < 0 {
+            Err(data)
+        } else {
+            Ok(data)
+        }
+    };
+    launch_callback(callback, result);
+}
+
+#[no_mangle]
 pub extern "C" fn notify_created() -> i32 {
     let instance = unsafe { &mut *INSTANCE_PTR };
     for plugin in instance.plugins.iter_mut() {
-        if let Err(err) = plugin.notify_created() {
+        if let Err(err) = plugin.created() {
+            error!("notify created failed. error: {}",err);
             return RESULT_INSTANCE_NOTIFY_CREATED;
         }
     }
+    instance.is_created = true;
+    RESULT_OK
+}
+
+#[no_mangle]
+pub extern "C" fn notify_mounted() -> i32 {
+    let instance = unsafe { &mut *INSTANCE_PTR };
+    for plugin in instance.plugins.iter_mut() {
+        if let Err(err) = plugin.mounted() {
+            error!("notify created failed. error: {}",err);
+            return RESULT_INSTANCE_NOTIFY_CREATED;
+        }
+    }
+    instance.is_mounted = true;
     RESULT_OK
 }

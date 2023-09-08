@@ -1,6 +1,7 @@
 use crate::common::string::{BridgeString, StringPoint};
 
 
+
 #[link(wasm_import_module = "2.0.0")]
 extern {
     fn logger(level: u32, point: StringPoint);
@@ -26,14 +27,14 @@ macro_rules! info {
     ($($arg:tt)*) => {
         {
             use crate::common::logger;
-            use crate::kplayer::unit::APP;
+            
             let file_path = file!();
             let line = line!();
             let func_name = module_path!();
             let log_message = format!($($arg)*);
             logger::logs(
                 logger::LogLevel::Info,
-                format!("app: {}, file_path: {}, file: {}, func_name: {}, message: {}", APP.unwrap(), file_path, line, func_name, log_message)
+                format!("file_path: {}, file: {}, func_name: {}, message: {}", file_path, line, func_name, log_message)
             )
         };
     }
@@ -44,14 +45,14 @@ macro_rules! warn {
     ($($arg:tt)*) => {
         {
             use crate::common::logger;
-            use crate::kplayer::unit::APP;
+            
             let file_path = file!();
             let line = line!();
             let func_name = module_path!();
             let log_message = format!($($arg)*);
             logger::logs(
                 logger::LogLevel::Warn,
-                format!("app: {}, file_path: {}, file: {}, func_name: {}, message: {}", APP.unwrap(), file_path, line, func_name, log_message)
+                format!("file_path: {}, file: {}, func_name: {}, message: {}", file_path, line, func_name, log_message)
             )
         };
     };
@@ -62,7 +63,7 @@ macro_rules! debug {
     ($($arg:tt)*) => {
         {
             use crate::common::logger;
-            use crate::kplayer::unit::APP;
+            
 
             let file_path = file!();
             let line = line!();
@@ -70,7 +71,7 @@ macro_rules! debug {
             let log_message = format!($($arg)*);
             logger::logs(
                 logger::LogLevel::Debug,
-                format!("app: {}, file_path: {}, file: {}, func_name: {}, message: {}", APP.unwrap(), file_path, line, func_name, log_message)
+                format!("file_path: {}, file: {}, func_name: {}, message: {}", file_path, line, func_name, log_message)
             )
         };
     };
@@ -81,7 +82,7 @@ macro_rules! error {
     ($($arg:tt)*) => {
         {
             use crate::common::logger;
-            use crate::kplayer::unit::APP;
+            
 
             let file_path = file!();
             let line = line!();
@@ -89,7 +90,7 @@ macro_rules! error {
             let log_message = format!($($arg)*);
             logger::logs(
                 logger::LogLevel::Error,
-                format!("app: {}, file_path: {}, file: {}, func_name: {}, message: {}", APP.unwrap(), file_path, line, func_name, log_message)
+                format!("file_path: {}, file: {}, func_name: {}, message: {}", file_path, line, func_name, log_message)
             );
         }
     };
@@ -100,7 +101,7 @@ macro_rules! trace {
     ($($arg:tt)*) => {
         {
             use crate::common::logger;
-            use crate::kplayer::unit::APP;
+            
 
             let file_path = file!();
             let line = line!();
@@ -108,7 +109,7 @@ macro_rules! trace {
             let log_message = format!($($arg)*);
             logger::logs(
                 logger::LogLevel::Trace,
-                format!("app: {}, file_path: {}, file: {}, func_name: {}, message: {}", APP.unwrap(), file_path, line, func_name, log_message)
+                format!("file_path: {}, file: {}, func_name: {}, message: {}", file_path, line, func_name, log_message)
             )
         };
     };

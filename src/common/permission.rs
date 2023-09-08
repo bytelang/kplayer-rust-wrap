@@ -1,4 +1,6 @@
-use crate::common::string::{BridgeString, pull_string, StringPoint};
+use crate::common::callback::{ClosureFunction, register_callback};
+use crate::common::string::{BridgeString, CallBackPoint, pull_string, StringPoint};
+use crate::kplayer::unit::INSTANCE_PTR;
 
 #[link(wasm_import_module = "2.0.0")]
 extern {
@@ -15,10 +17,19 @@ extern {
     fn ext_http_request(url_point: StringPoint, method: StringPoint, query_string: StringPoint, body_string: StringPoint, headers: StringPoint, data_point: StringPoint) -> i32;
 
     // ext_prompt
-    fn ext_send_prompt(name_point: StringPoint, prompt_point: StringPoint, data_point: StringPoint) -> i32;
+    fn ext_send_prompt(prompt_point: StringPoint, data_point: StringPoint) -> i32;
 }
 
 pub struct Permission {}
+
+pub fn has_created_must() -> Result<(), String> {
+    let instance = unsafe { &mut *INSTANCE_PTR };
+    if !instance.is_created() {
+        return Err(format!("the plugin instance object has not been created or initialized yet."));
+    }
+
+    Ok(())
+}
 
 impl Permission {
     pub fn register_permission_subscribe_message<T: ToString>(action: T) -> Result<(), String> {
@@ -36,5 +47,44 @@ impl Permission {
             }
         }
         Ok(())
+    }
+
+    pub fn register_permission_prompt<T: ToString>(prompt: T) -> Result<String, String> {
+        unsafe {
+            let perm_str = BridgeString::new(format!(r#"{{"PublishPrompt":{{"prompt":["{}"]}}}}"#, prompt.to_string()));
+            let perm_point = perm_str.get();
+
+            let data_str = BridgeString::create();
+            let data_point = data_str.get();
+
+            // call
+            let result = register_permission(perm_point, data_point);
+            if result < 0 {
+                return Err(data_str.to_string());
+            }
+
+            Ok(data_str.to_string())
+        }
+    }
+
+    pub fn send_permission_prompt(prompt: String) -> Result<String, String> {
+        has_created_must()?;
+
+        // send prompt
+        unsafe {
+            let prompt_str = BridgeString::new(prompt);
+            let prompt_point = prompt_str.get();
+
+            let data_str = BridgeString::create();
+            let data_point = data_str.get();
+
+            // call
+            let result = ext_send_prompt(prompt_point, data_point);
+            if result < 0 {
+                return Err(data_str.to_string());
+            }
+
+            Ok(data_str.to_string())
+        }
     }
 }
