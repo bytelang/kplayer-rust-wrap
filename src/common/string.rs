@@ -1,9 +1,9 @@
 #[link(wasm_import_module = "2.0.0")]
-extern {
+extern "C" {
     fn string_make() -> StringPoint;
-    fn string_free(point: StringPoint) -> i32;
-    fn string_push(point: u64, chr: u32) -> u64;
-    fn string_get(point: u64, index: u64) -> i32;
+    fn string_free(point: StringPoint);
+    fn string_push(point: StringPoint, chr: i64) -> i64;
+    fn string_get(point: StringPoint, index: i64) -> i32;
 }
 
 pub struct BridgeString {
@@ -15,9 +15,7 @@ impl BridgeString {
         unsafe {
             let point = string_make();
             push_string(point, str.to_string());
-            BridgeString {
-                point
-            }
+            BridgeString { point }
         }
     }
 
@@ -44,8 +42,7 @@ impl Drop for BridgeString {
     }
 }
 
-pub type StringPoint = u64;
-pub type CallBackPoint = u64;
+pub type StringPoint = i64;
 
 pub fn pull_string(point: StringPoint) -> String {
     let mut str = String::new();
@@ -70,7 +67,7 @@ pub fn push_string<T: ToString>(point: StringPoint, str: T) {
     let get_vec = get_str.as_bytes();
     for s in get_vec {
         unsafe {
-            string_push(point, s.clone() as u32);
+            string_push(point, s.clone() as i64);
         }
     }
 }

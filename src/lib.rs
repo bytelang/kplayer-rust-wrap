@@ -1,8 +1,8 @@
-use std::collections::{BTreeMap, HashMap};
 use crate::kplayer::unit::{KPPluginUnit, KPPluginUnitBasic};
+use std::collections::{BTreeMap, HashMap};
 
-pub mod kplayer;
 pub mod common;
+pub mod kplayer;
 
 #[macro_export]
 macro_rules! export {

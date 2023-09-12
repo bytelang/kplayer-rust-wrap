@@ -1,9 +1,8 @@
-use crate::common::callback::{ClosureFunction, register_callback};
-use crate::common::string::{BridgeString, CallBackPoint, pull_string, StringPoint};
+use crate::common::string::{pull_string, BridgeString, StringPoint};
 use crate::kplayer::unit::INSTANCE_PTR;
 
 #[link(wasm_import_module = "2.0.0")]
-extern {
+extern "C" {
     fn register_permission(point: StringPoint, data_point: StringPoint) -> i32;
 
     // ext_file
@@ -14,7 +13,14 @@ extern {
     fn ext_db_execute(point: StringPoint, data_point: StringPoint) -> i32;
 
     // ext_http
-    fn ext_http_request(url_point: StringPoint, method: StringPoint, query_string: StringPoint, body_string: StringPoint, headers: StringPoint, data_point: StringPoint) -> i32;
+    fn ext_http_request(
+        url_point: StringPoint,
+        method: StringPoint,
+        query_string: StringPoint,
+        body_string: StringPoint,
+        headers: StringPoint,
+        data_point: StringPoint,
+    ) -> i32;
 
     // ext_prompt
     fn ext_send_prompt(prompt_point: StringPoint, data_point: StringPoint) -> i32;
@@ -25,7 +31,9 @@ pub struct Permission {}
 pub fn has_created_must() -> Result<(), String> {
     let instance = unsafe { &mut *INSTANCE_PTR };
     if !instance.is_created() {
-        return Err(format!("the plugin instance object has not been created or initialized yet."));
+        return Err(format!(
+            "the plugin instance object has not been created or initialized yet."
+        ));
     }
 
     Ok(())
@@ -34,7 +42,10 @@ pub fn has_created_must() -> Result<(), String> {
 impl Permission {
     pub fn register_permission_subscribe_message<T: ToString>(action: T) -> Result<(), String> {
         unsafe {
-            let perm_str = BridgeString::new(format!(r#"{{"SubscribeMessage":{{"action":["{}"]}}}}"#, action.to_string()));
+            let perm_str = BridgeString::new(format!(
+                r#"{{"SubscribeMessage":{{"action":["{}"]}}}}"#,
+                action.to_string()
+            ));
             let perm_point = perm_str.get();
 
             let data_str = BridgeString::create();
@@ -51,7 +62,10 @@ impl Permission {
 
     pub fn register_permission_prompt<T: ToString>(prompt: T) -> Result<String, String> {
         unsafe {
-            let perm_str = BridgeString::new(format!(r#"{{"PublishPrompt":{{"prompt":["{}"]}}}}"#, prompt.to_string()));
+            let perm_str = BridgeString::new(format!(
+                r#"{{"PublishPrompt":{{"prompt":["{}"]}}}}"#,
+                prompt.to_string()
+            ));
             let perm_point = perm_str.get();
 
             let data_str = BridgeString::create();

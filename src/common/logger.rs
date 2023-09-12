@@ -1,9 +1,7 @@
 use crate::common::string::{BridgeString, StringPoint};
 
-
-
 #[link(wasm_import_module = "2.0.0")]
-extern {
+extern "C" {
     fn logger(level: u32, point: StringPoint);
 }
 
@@ -27,7 +25,7 @@ macro_rules! info {
     ($($arg:tt)*) => {
         {
             use crate::common::logger;
-            
+
             let file_path = file!();
             let line = line!();
             let func_name = module_path!();
@@ -45,7 +43,7 @@ macro_rules! warn {
     ($($arg:tt)*) => {
         {
             use crate::common::logger;
-            
+
             let file_path = file!();
             let line = line!();
             let func_name = module_path!();
@@ -63,7 +61,6 @@ macro_rules! debug {
     ($($arg:tt)*) => {
         {
             use crate::common::logger;
-            
 
             let file_path = file!();
             let line = line!();
@@ -82,7 +79,6 @@ macro_rules! error {
     ($($arg:tt)*) => {
         {
             use crate::common::logger;
-            
 
             let file_path = file!();
             let line = line!();
@@ -101,7 +97,6 @@ macro_rules! trace {
     ($($arg:tt)*) => {
         {
             use crate::common::logger;
-            
 
             let file_path = file!();
             let line = line!();
