@@ -3,7 +3,7 @@ use crate::common::string::{pull_string, push_string, StringPoint};
 use crate::error;
 use serde_derive::Deserialize;
 use std::collections::{BTreeMap, HashMap};
-use std::sync::{Arc, Mutex};
+use std::sync::{Mutex};
 
 const DRIVER_VERSION: &str = "2.0.0";
 pub static mut APP: Option<Mutex<String>> = None;
@@ -32,7 +32,7 @@ pub trait KPPluginUnitBasic {
         &mut self,
         arguments: HashMap<String, String>,
     ) -> Result<HashMap<String, String>, String>;
-    fn notify_subscribe(&self, action: String, message: String) {}
+    fn notify_subscribe(&self, _action: String, _message: String) {}
     fn created(&mut self) -> Result<(), String> {
         Ok(())
     }

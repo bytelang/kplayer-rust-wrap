@@ -1,4 +1,4 @@
-use crate::common::string::{pull_string, BridgeString, StringPoint};
+use crate::common::string::{BridgeString, StringPoint};
 use crate::kplayer::unit::INSTANCE_PTR;
 
 #[link(wasm_import_module = "2.0.0")]
