@@ -45,7 +45,7 @@ impl Drop for BridgeString {
 pub type StringPoint = i64;
 
 pub fn pull_string(point: StringPoint) -> String {
-    let mut str = String::new();
+    let mut str = Vec::new();
     let mut index = 0;
     loop {
         unsafe {
@@ -54,12 +54,12 @@ pub fn pull_string(point: StringPoint) -> String {
                 break;
             }
 
-            str.push(std::char::from_u32(chr as u32).unwrap());
+            str.push(chr as u8);
             index += 1;
         }
     }
 
-    str
+    String::from_utf8(str).unwrap()
 }
 
 pub fn push_string<T: ToString>(point: StringPoint, str: T) {
