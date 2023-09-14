@@ -23,19 +23,51 @@ pub enum KPPluginFilterType {
 }
 
 pub trait KPPluginUnitBasic {
+    // The app name of the plugin, and this name needs to be unique within your namespace.
+    // ex: show-text-1
     fn get_name(&self) -> String;
+
+    // Regarding the filter name that need to be used
     fn get_filter_name(&self) -> String;
+
+    // Indicate what type of plugin this is
+    // This directly impacts the loading method on the filter chain
+    // ex: KPPluginFilterType::Main
     fn get_filter_type(&self) -> KPPluginFilterType;
+
+    // Provide a list of the filter parameters supported by this plugin
     fn default_arguments(&self) -> BTreeMap<String, String>;
+
+    // Provide a list of the user-defined parameters supported by this plugin.
+    // These parameters can be overridden by the user to modify default settings.
     fn allow_arguments(&self) -> Vec<String>;
+
+    // After the user has loaded the plugin and set a custom list of parameters
+    // you will need to rewrite the user's repository once in order to verify, remove, and override these operations
+    // to ensure that the parameters are effective.
+    // You need to return the processed parameter list back, which requires you to return the complete parameter list instead of just the modified ones.
+    fn set_arguments(
+        &mut self,
+        arguments: HashMap<String, String>,
+    ) -> Result<HashMap<String, String>, String>;
+
+    // When the user updates the parameters, this function will be called,
+    // and you need to convert it into a suitable parameter list similar to send_command.
     fn update_arguments(
         &mut self,
         arguments: HashMap<String, String>,
     ) -> Result<HashMap<String, String>, String>;
+
+    // After subscribing to the event, you will receive the subscribed event push here.
     fn notify_subscribe(&self, _action: String, _message: String) {}
+
+    // This is part of the lifecycle, where "created" typically represents a successfully initialized event.
     fn created(&mut self) -> Result<(), String> {
         Ok(())
     }
+
+    // This is part of the lifecycle, where "mounted" typically represents a notification message after the example is loaded.
+    // Please note that this function will be executed every time the media file is switched.
     fn mounted(&mut self) -> Result<(), String> {
         Ok(())
     }
@@ -232,6 +264,58 @@ pub extern "C" fn get_instance_allow_arguments(
         }
     }
 
+    RESULT_OK
+}
+
+
+#[no_mangle]
+pub extern "C" fn set_arguments(
+    set_argument_point: StringPoint,
+    data_point: StringPoint,
+) -> i32 {
+    let update_argument = pull_string(set_argument_point);
+
+    let arguments = match serde_json::from_str::<HashMap<String, String>>(update_argument.as_str())
+    {
+        Ok(data) => data,
+        Err(err) => {
+            push_string(data_point, format!("parse argument failed, error: {}", err));
+            return RESULT_INSTANCE_SET_ARGUMENT_FAILED;
+        }
+    };
+
+    // transform argument
+    let instance = unsafe { &mut *INSTANCE_PTR };
+    for plugin in instance.plugins.iter_mut() {
+        return match plugin.set_arguments(arguments.clone()) {
+            Ok(result) => match serde_json::to_string(&result) {
+                Ok(transfer_data) => {
+                    push_string(data_point, transfer_data);
+                    0
+                }
+                Err(err) => {
+                    push_string(
+                        data_point,
+                        format!(
+                            "invalid argument json format. transfer_data: {:?}, error: {}",
+                            result, err
+                        ),
+                    );
+                    RESULT_INSTANCE_SET_ARGUMENT_FAILED
+                }
+            },
+            Err(err) => {
+                push_string(
+                    data_point,
+                    format!(
+                        "set argument failed. arguments: {:?}, error: {}",
+                        arguments, err
+                    ),
+                );
+                RESULT_INSTANCE_SET_ARGUMENT_FAILED
+            }
+        };
+    }
     RESULT_OK
 }
 
