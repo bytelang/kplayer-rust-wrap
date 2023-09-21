@@ -6,7 +6,8 @@ extern "C" {
     fn register_permission(point: StringPoint, data_point: StringPoint) -> i32;
 
     // ext_file
-    fn ext_open_file(point: StringPoint, data_point: StringPoint) -> i32;
+    fn ext_file_open(point: StringPoint, data_point: StringPoint) -> i32;
+    fn ext_file_existed(point: StringPoint, data_point: StringPoint) -> i32;
 
     // ext_db
     fn ext_db_query(point: StringPoint, data_point: StringPoint) -> i32;
@@ -81,6 +82,28 @@ impl Permission {
         }
     }
 
+    pub fn register_file(path: Vec<String>) -> Result<String, String> {
+        unsafe {
+            let perm_str = BridgeString::new(format!(
+                r#"{{"File":{{"path":["{}"]}}}}"#, ""
+            ));
+            let perm_point = perm_str.get();
+
+            let data_str = BridgeString::create();
+            let data_point = data_str.get();
+
+            // call
+            let result = register_permission(perm_point, data_point);
+            if result < 0 {
+                return Err(data_str.to_string());
+            }
+
+            Ok(data_str.to_string())
+        }
+    }
+}
+
+impl Permission {
     pub fn send_permission_prompt(prompt: String) -> Result<String, String> {
         has_created_must()?;
 
@@ -99,6 +122,25 @@ impl Permission {
             }
 
             Ok(data_str.to_string())
+        }
+    }
+}
+
+impl Permission {
+    pub fn file_existed(path: &String) -> Result<bool, String> {
+        unsafe {
+            let path_str = BridgeString::new(path);
+            let path_point = path_str.get();
+
+            let data_str = BridgeString::create();
+            let data_point = data_str.get();
+
+            let result = ext_file_existed(path_point, data_point);
+            if result < 0 {
+                return Err(data_str.to_string());
+            }
+
+            Ok(true)
         }
     }
 }

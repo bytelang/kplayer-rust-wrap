@@ -402,11 +402,12 @@ pub extern "C" fn notify_subscribe(message_point: StringPoint) -> i32 {
 }
 
 #[no_mangle]
-pub extern "C" fn notify_created() -> i32 {
+pub extern "C" fn notify_created(data_point: StringPoint) -> i32 {
     let instance = unsafe { &mut *INSTANCE_PTR };
     for plugin in instance.plugins.iter_mut() {
         if let Err(err) = plugin.created() {
             error!("notify created failed. error: {}", err);
+            push_string(data_point, format!("{}", err));
             return RESULT_INSTANCE_NOTIFY_CREATED;
         }
     }
@@ -415,12 +416,13 @@ pub extern "C" fn notify_created() -> i32 {
 }
 
 #[no_mangle]
-pub extern "C" fn notify_mounted() -> i32 {
+pub extern "C" fn notify_mounted(data_point: StringPoint) -> i32 {
     let instance = unsafe { &mut *INSTANCE_PTR };
     for plugin in instance.plugins.iter_mut() {
         if let Err(err) = plugin.mounted() {
-            error!("notify created failed. error: {}", err);
-            return RESULT_INSTANCE_NOTIFY_CREATED;
+            error!("notify mounted failed. error: {}", err);
+            push_string(data_point, format!("{}", err));
+            return RESULT_INSTANCE_NOTIFY_MOUNTED;
         }
     }
     instance.is_mounted = true;
