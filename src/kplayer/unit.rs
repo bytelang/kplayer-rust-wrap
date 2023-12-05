@@ -79,22 +79,24 @@ pub struct KPPluginUnit {
     pub app: String,
     pub author: String,
     pub media_type: KPPluginMediaType,
+    pub clock: Option<String>,
     pub plugins: Vec<Box<dyn KPPluginUnitBasic>>,
 }
 
 impl KPPluginUnit {
-    pub fn new(app: String, author: String, media_type: KPPluginMediaType) -> KPPluginUnit {
+    pub fn new(app: String, author: String, media_type: KPPluginMediaType, clock: Option<String>) -> KPPluginUnit {
         KPPluginUnit {
             is_created: false,
             is_mounted: false,
             app,
             author,
             media_type,
+            clock,
             plugins: Vec::new(),
         }
     }
 
-    pub fn init<T: ToString, A: ToString>(app: T, author: A, media_type: KPPluginMediaType) {
+    pub fn init<T: ToString, A: ToString>(app: T, author: A, media_type: KPPluginMediaType, clock: Option<String>) {
         unsafe {
             if APP.is_none() {
                 APP = Some(Mutex::new(app.to_string()));
@@ -105,6 +107,7 @@ impl KPPluginUnit {
                     app.to_string(),
                     author.to_string(),
                     media_type,
+                    clock,
                 ));
                 let ptr: &'static mut KPPluginUnit = Box::leak(unit);
                 INSTANCE_PTR = ptr as *mut KPPluginUnit;
@@ -168,6 +171,18 @@ pub extern "C" fn get_author(point: StringPoint) -> i32 {
 pub extern "C" fn get_media_type() -> u32 {
     let instance = unsafe { &mut *INSTANCE_PTR };
     instance.media_type as u32
+}
+
+#[no_mangle]
+pub extern "C" fn get_clock(point: StringPoint) -> u32 {
+    let instance = unsafe { &mut *INSTANCE_PTR };
+    match instance.clock.as_ref() {
+        None => RESULT_INSTANCE_CLOCK_EMPTY as u32,
+        Some(get_clock) => {
+            push_string(point, get_clock);
+            RESULT_OK as u32
+        }
+    }
 }
 
 // =========================================== plugin items ======================================= //
